@@ -21,10 +21,16 @@ $(document).ready(function() {
                         rainFall();
                         break;
         			case 65:
-        				$('.character').animate({left: "-=40px"}, 'fast', function() {marioLeft = parseInt($('.character').css('left')); marioBody = marioLeft + marioWidth;});
+                        //console.log(parseInt($('.character').css('left')));
+                        if(parseInt($('.character').css('left')) >= 20) {
+                            $('.character').animate({left: "-=40px"}, 'fast', function() {marioLeft = parseInt($('.character').css('left')); marioBody = marioLeft + marioWidth;});
+                        }
         				break;
         			case 68:
-        				$('.character').animate({left: "+=40px"}, 'fast', function() {marioLeft = parseInt($('.character').css('left')); marioBody = marioLeft + marioWidth;});
+                        console.log(parseInt($('.character').css('left')));
+                        if(parseInt($('.character').css('left')) <= 342) {
+        				    $('.character').animate({left: "+=40px"}, 'fast', function() {marioLeft = parseInt($('.character').css('left')); marioBody = marioLeft + marioWidth;});
+                        }
         				break;
         			defaultkey: "value"
         				break;
