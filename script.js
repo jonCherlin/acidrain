@@ -14,6 +14,9 @@ $(document).ready(function() {
             var marioLeft;
             var marioWidth = parseInt($('.character').css('width'));
             var marioBody;
+            var rainGround = parseInt($('body').height()) - parseInt($('.ground').height()) - 13;
+            console.log(rainGround);
+            
             $(document).keydown(function(key) {
                 switch(parseInt(key.which,10)) {
                     case 13:
@@ -37,9 +40,11 @@ $(document).ready(function() {
         		}
         	});
             function rainFall() {
-                randomLeft = Math.floor(Math.random() * 390 + 1);
+                //randomLeft = Math.floor(Math.random() * 390 + 1);
+                randomLeft = Math.floor(Math.random() * 1024 + 1);
                 rainLeft = parseInt($('.rain').css('left', randomLeft));
-                $('.rain').animate({top:'200px'}, 420, function() {
+                //$('.rain').animate({top:'200px'}, 420, function() {
+                    $('.rain').animate({top: rainGround}, 1028, function() {
                     
                     if(randomLeft <= marioBody && randomLeft >= marioLeft) {
                         alert("You've been burned by ACID RAIN!!");
