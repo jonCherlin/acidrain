@@ -6,7 +6,12 @@ body {
     height: 728px;
     margin: 0 auto;
     position:relative;
-    border:1px solid black;
+    background: rgb(75, 155, 180);
+}
+#content_wrap {
+  width: 100%;
+  height: 100%;
+  background: #fff;
 }
 .rain {
     width:10px;
@@ -27,7 +32,9 @@ body {
 .play {
    text-align:center;
    /*margin-top:112.5px;*/
-   margin-top: 364px;
+   top: 364px;
+   position: absolute;
+   width: 100%;
    background:green;
    color:white;
    font-weight:bold;
