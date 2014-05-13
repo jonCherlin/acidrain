@@ -15,8 +15,8 @@ $(document).ready(function() {
             var marioWidth = parseInt($('.character').css('width'));
             var marioBody;
             var rainGround = parseInt($('body').height()) - parseInt($('.ground').height()) - 13;
-            console.log(rainGround);
-            
+            //console.log(rainGround);
+
             $(document).keydown(function(key) {
                 switch(parseInt(key.which,10)) {
                     case 13:
@@ -31,7 +31,8 @@ $(document).ready(function() {
         				break;
         			case 68:
                         console.log(parseInt($('.character').css('left')));
-                        if(parseInt($('.character').css('left')) <= 342) {
+                        //if(parseInt($('.character').css('left')) <= 342)
+                        if(parseInt($('.character').css('left')) <= 1024) {
         				    $('.character').animate({left: "+=40px"}, 'fast', function() {marioLeft = parseInt($('.character').css('left')); marioBody = marioLeft + marioWidth;});
                         }
         				break;
