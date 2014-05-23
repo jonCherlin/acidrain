@@ -18,28 +18,40 @@ $(document).ready(function() {
             //console.log(rainGround);
 
             $(document).keydown(function(key) {
-                switch(parseInt(key.which,10)) {
+                switch(parseInt(key.which)) {
                     case 13:
                         $('.play').hide();
                         rainFall();
                         break;
         			case 65:
                         //console.log(parseInt($('.character').css('left')));
-                        if(parseInt($('.character').css('left')) >= 20) {
-                            $('.character').animate({left: "-=48px"}, 'fast', function() {marioLeft = parseInt($('.character').css('left')); marioBody = marioLeft + marioWidth;});
+                        if(parseInt($('.character').css('left')) > 0) {
+                            $('.character').animate({left: "-=64px"}, 'fast', function() {marioLeft = parseInt($('.character').css('left')); marioBody = marioLeft + marioWidth;});
                         }
+						
+						else if (parseInt($('.character').css('left')) + (marioWidth) <= 0) {
+							$('.character').animate({left: "+=0px"}, 'fast', function() {
+								$('.character').css('left', 0);
+								console.log('hit left wall = ');
+								console.log($('.character').css('left'));
+							});
+						}
         				break;
         			case 68:
-                        console.log(parseInt($('.character').css('left')));
-                        //if(parseInt($('.character').css('left')) <= 342)
-                        if(parseInt($('.character').css('left')) < $('#content_wrap').width() - 48) {
-                            
-        				    $('.character').animate({left: "+=48px"}, 'fast', function() {marioLeft = parseInt($('.character').css('left')); marioBody = marioLeft + marioWidth;});
+                        //console.log(parseInt($('.character').css('left')) + ($('.character').width() * 2));
+						//console.log('marioWidth = ' + marioWidth);
+                        if(parseInt($('.character').css('left')) + (marioWidth) < 1024) {
+                            console.log(parseInt($('.character').css('left')) + marioWidth);
+        				    $('.character').animate({left: "+=64px"}, 'fast', function() {marioLeft = parseInt($('.character').css('left')); marioBody = marioLeft + marioWidth;});
                         }
-            
-                        else {
-                          console.log('hit right wall');  
-                        }
+						
+						else if (parseInt($('.character').css('left')) + (marioWidth) >= 1024) {
+							$('.character').animate({left: "+=0px"}, 'fast', function() {
+								$('.character').css('left', 1024 - marioWidth);
+								console.log('hit right wall = ');
+								console.log($('.character').css('left'));
+							});
+						}
         				break;
         			defaultkey: "value"
         				break;
