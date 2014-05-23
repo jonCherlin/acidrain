@@ -73,7 +73,7 @@ $(document).ready(function() {
                 randomLeft = Math.floor(Math.random() * 1024 + 1);
                 rainLeft = parseInt($('.rain').css('left', randomLeft));
                 //$('.rain').animate({top:'200px'}, 420, function() {
-                    $('.rain').animate({top: rainGround}, 1028, function() {
+                    $('.rain').animate({top: rainGround}, 350, function() {
                     
                     if(randomLeft <= marioBody && randomLeft >= marioLeft) {
                         alert("You've been burned by ACID RAIN!!");
