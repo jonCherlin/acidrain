@@ -32,13 +32,11 @@ $(document).ready(function() {
         			case 68:
                         console.log(parseInt($('.character').css('left')));
                         //if(parseInt($('.character').css('left')) <= 342)
-                        if(parseInt($('.character').css('left')) < 913) {
+                        if(parseInt($('.character').css('left')) < $('#content_wrap').width() - 48) {
                             
         				    $('.character').animate({left: "+=48px"}, 'fast', function() {marioLeft = parseInt($('.character').css('left')); marioBody = marioLeft + marioWidth;});
                         }
-                        else if(parseInt($('.character').css('left')) >= 912 && parseInt($('.character').css('left')) <= 1024) {
-                            $('.character').animate({left: "+=18px"}, 'fast', function() {marioLeft = parseInt($('.character').css('left')); marioBody = marioLeft + marioWidth;});
-                        }
+            
                         else {
                           console.log('hit right wall');  
                         }
