@@ -26,7 +26,12 @@ $(document).ready(function() {
         			case 65:
                         //console.log(parseInt($('.character').css('left')));
                         if(parseInt($('.character').css('left')) > 0) {
-                            $('.character').animate({left: "-=64px"}, 'fast', function() {marioLeft = parseInt($('.character').css('left')); marioBody = marioLeft + marioWidth;});
+                           /* $('.character').animate({left: "-=64px"}, 'fast', function() {marioLeft = parseInt($('.character').css('left')); marioBody = marioLeft + marioWidth;});*/
+
+                           var walkRight = parseInt($('.character').css('left'));
+                            $('.character').css('left', walkRight -= 64);
+                            marioLeft = parseInt($('.character').css('left')); 
+                            marioBody = marioLeft + marioWidth;
                         }
 						
 						else if (parseInt($('.character').css('left')) + (marioWidth) <= 0) {
@@ -41,17 +46,23 @@ $(document).ready(function() {
                         //console.log(parseInt($('.character').css('left')) + ($('.character').width() * 2));
 						//console.log('marioWidth = ' + marioWidth);
                         if(parseInt($('.character').css('left')) + (marioWidth) < 1024) {
-                            console.log(parseInt($('.character').css('left')) + marioWidth);
-        				    $('.character').animate({left: "+=64px"}, 'fast', function() {marioLeft = parseInt($('.character').css('left')); marioBody = marioLeft + marioWidth;});
+                           // console.log(parseInt($('.character').css('left')) + marioWidth);
+
+        				    /*$('.character').animate({left: "+=64px"}, 'fast', function() {marioLeft = parseInt($('.character').css('left')); marioBody = marioLeft + marioWidth;});*/
+
+                            var walkLeft = parseInt($('.character').css('left'));
+                            $('.character').css('left', walkLeft += 64);
+                            marioLeft = parseInt($('.character').css('left')); 
+                            marioBody = marioLeft + marioWidth;
                         }
 						
-						else if (parseInt($('.character').css('left')) + (marioWidth) >= 1024) {
+						/*else if (parseInt($('.character').css('left')) + (marioWidth) >= 1024) {
 							$('.character').animate({left: "+=0px"}, 'fast', function() {
 								$('.character').css('left', 1024 - marioWidth);
 								console.log('hit right wall = ');
 								console.log($('.character').css('left'));
 							});
-						}
+						}*/
         				break;
         			defaultkey: "value"
         				break;
