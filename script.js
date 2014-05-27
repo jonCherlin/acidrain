@@ -64,11 +64,15 @@ $(document).ready(function() {
                     randomLeft = Math.floor(Math.random() * 1024 + 1);
                     rainLeft = parseInt($(this).css('left', randomLeft));
 
-                     console.log($(this).left);
+                     //console.log($(this).css('left'));
 
                      $(this).animate({top: rainGround}, 900, function() {
-                    
-                        if(randomLeft <= marioBody && randomLeft >= marioLeft) {
+                        
+                        if(parseInt($(this).css('left')) <= marioBody && parseInt($(this).css('left')) >= marioLeft) {
+                            console.log('rain left = ' + parseInt($(this).css('left')));
+                            console.log('marioBody = ' + marioBody);
+                            console.log('marioLeft = ' + marioLeft);
+
                             alert("You've been burned by ACID RAIN!!");
                             //gameIsOn = false;
                             $('.play').show();
