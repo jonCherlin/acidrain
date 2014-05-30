@@ -15,6 +15,7 @@ $(document).ready(function() {
             var marioWidth = parseInt($('.character').css('width'));
             var marioBody;
             var rainGround = parseInt($('body').height()) - parseInt($('.ground').height()) - 13;
+            var rainHit = false;
             //console.log(rainGround);
 
             $(document).keydown(function(key) {
@@ -62,19 +63,26 @@ $(document).ready(function() {
                 $('.rain').each(function() {
                     //console.log($(this));
                     randomLeft = Math.floor(Math.random() * 1024 + 1);
-                    rainLeft = parseInt($(this).css('left', randomLeft));
+
+                    parseInt($(this).css('left', randomLeft));
+
+                    rainLeft = parseInt($(this).css('left'));
 
                      //console.log($(this).css('left'));
 
                      $(this).animate({top: rainGround}, 900, function() {
-                        
-                        if(parseInt($(this).css('left')) <= marioBody && parseInt($(this).css('left')) >= marioLeft) {
+                        console.log(rainLeft);
+                        //console.log('rain left = ' + parseInt($(this).css('left')));
+
+                        if(rainLeft <= marioBody && rainLeft >= marioLeft) {
                             console.log('rain left = ' + parseInt($(this).css('left')));
                             console.log('marioBody = ' + marioBody);
                             console.log('marioLeft = ' + marioLeft);
 
                             alert("You've been burned by ACID RAIN!!");
                             //gameIsOn = false;
+                            //rainHit = true;
+
                             $('.play').show();
                             $('.rain').css('top', '-20px');
                             $('.rain').stop();
@@ -87,23 +95,8 @@ $(document).ready(function() {
 
                 });
 
-                    //interesting fun pace at 350
-                    //$('.rain').animate({top: rainGround}, 350, function() {
-                    
-                    /*$('.rain').animate({top: rainGround}, 900, function() {
-                    
-                        if(randomLeft <= marioBody && randomLeft >= marioLeft) {
-                            alert("You've been burned by ACID RAIN!!");
-                            //gameIsOn = false;
-                            $('.play').show();
-                            $('.rain').css('top', '-20px');
-                            $('.rain').stop();
-                        }
-                        else {
-                            $('.rain').css('top', '-20px');
-                            rainFall();
-                        }
-                    });*/
+        
+                
             }
  
 });
