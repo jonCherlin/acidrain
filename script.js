@@ -33,11 +33,12 @@ $(document).ready(function() {
                         gameReset();
                         break;
         			case 65:
+                    case 37:
                         //console.log(parseInt($('.character').css('left')));
                         if(parseInt($('.character').css('left')) > 0) {
 
-                           var walkRight = parseInt($('.character').css('left'));
-                            $('.character').css('left', walkRight -= 64);
+                           var walkLeft = parseInt($('.character').css('left'));
+                            $('.character').css('left', walkLeft -= 64);
                             marioLeft = parseInt($('.character').css('left')); 
                             marioBody = marioLeft + marioWidth;
                         }
@@ -51,13 +52,14 @@ $(document).ready(function() {
 						}
         				break;
         			case 68:
+                    case 39:
                         //console.log(parseInt($('.character').css('left')) + ($('.character').width() * 2));
 						//console.log('marioWidth = ' + marioWidth);
                         if(parseInt($('.character').css('left')) + (marioWidth) < 1024) {
                            // console.log(parseInt($('.character').css('left')) + marioWidth);
 
-                            var walkLeft = parseInt($('.character').css('left'));
-                            $('.character').css('left', walkLeft += 64);
+                            var walkRight = parseInt($('.character').css('left'));
+                            $('.character').css('left', walkRight += 64);
                             marioLeft = parseInt($('.character').css('left')); 
                             marioBody = marioLeft + marioWidth;
                         }
@@ -117,6 +119,7 @@ $(document).ready(function() {
                                 //gameIsOn = false;
                                 rainHit = true;
                                 console.log('rain hit identity = ' + $(this).attr('class'));
+                                console.log('rain hit x-pos = ' + $(this).css('left'));
                                 console.log('rain hit y-pos = ' + $(this).css('top'));
 
                                 /*$('.play').show();
