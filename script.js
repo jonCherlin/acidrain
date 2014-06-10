@@ -1,28 +1,36 @@
 // Add your JavaScript below!
 $(document).ready(function() {
     //alert('Click OK to Play!');
-    //var gameIsOn = false;
+    var gameIsOn = false;
+    var randomLeft;
+    var rainLeft;
+    var rainWidth = $('.rain').css('width');
+    var marioTop = parseInt($('body').css('height')) - parseInt($('.character').css('height'));
+    var marioLeft = 0;
+    var marioWidth = parseInt($('.character').css('width'));
+    var marioBody = marioLeft + marioWidth;
+    var rainGround = parseInt($('body').height()) - parseInt($('.ground').height()) - 13;
+    var rainHit = false;
+    //console.log(rainGround);
+
     $('.play').click(function() {
        $('.play').hide();
        rainFall();
+       gameIsOn = true;
+       rainHit = false;
+       console.log('rainHit = ' + rainHit);
+       console.log('gameIsOn = ' + gameIsOn);
     });
-            
-            var randomLeft;
-            var rainLeft;
-            var rainWidth = $('.rain').css('width');
-            var marioTop = parseInt($('body').css('height')) - parseInt($('.character').css('height'));
-            var marioLeft;
-            var marioWidth = parseInt($('.character').css('width'));
-            var marioBody;
-            var rainGround = parseInt($('body').height()) - parseInt($('.ground').height()) - 13;
-            var rainHit = false;
-            //console.log(rainGround);
 
             $(document).keydown(function(key) {
                 switch(parseInt(key.which)) {
                     case 13:
                         $('.play').hide();
-                        rainFall();
+                       rainFall();
+                       gameIsOn = true;
+                       rainHit = false;
+                       console.log('rainHit = ' + rainHit);
+                       console.log('gameIsOn = ' + gameIsOn);
                         break;
         			case 65:
                         //console.log(parseInt($('.character').css('left')));
@@ -60,43 +68,103 @@ $(document).ready(function() {
         		}
         	});
             function rainFall() {
-                $('.rain').each(function() {
-                    //console.log($(this));
-                    randomLeft = Math.floor(Math.random() * 1024 + 1);
 
-                    parseInt($(this).css('left', randomLeft));
+                console.log('rainFall rainHit = ' + rainHit);
 
-                    rainLeft = parseInt($(this).css('left'));
+                if(rainHit) {
+                    alert("You've been burned by ACID RAIN!!");
+                    $('.play').show();
+                    //$('.rain').css('top', '-20px');
+                    //$('.rain').stop();
 
-                     //console.log($(this).css('left'));
-
-                     $(this).animate({top: rainGround}, 900, function() {
-                        console.log(rainLeft);
-                        //console.log('rain left = ' + parseInt($(this).css('left')));
-
-                        if(rainLeft <= marioBody && rainLeft >= marioLeft) {
-                            console.log('rain left = ' + parseInt($(this).css('left')));
-                            console.log('marioBody = ' + marioBody);
-                            console.log('marioLeft = ' + marioLeft);
-
-                            alert("You've been burned by ACID RAIN!!");
-                            //gameIsOn = false;
-                            //rainHit = true;
-
-                            $('.play').show();
-                            $('.rain').css('top', '-20px');
-                            $('.rain').stop();
-                        }
-                        else {
-                            $('.rain').css('top', '-20px');
-                            rainFall();
-                        }
+                    $('.rain').each(function() {
+                        $(this).css('top', '-20px');
+                        $(this).stop(true);
                     });
 
-                });
 
-        
+
+                    rainHit = false;
+                    //alert("hit");
+                }
+
+                else {
+                    $('.rain').each(function() {
+                        //console.log($(this));
+                        randomLeft = Math.floor(Math.random() * 1024 + 1);
+
+                        parseInt($(this).css('left', randomLeft));
+
+                        rainLeft = parseInt($(this).css('left'));
+
+                         //console.log($(this).css('left'));
+
+                         $(this).css('top', '-20px');
+
+                         $(this).animate({top: rainGround}, 900, function() {
+                            console.log(rainLeft);
+                            //console.log('rain left = ' + parseInt($(this).css('left')));
+
+                            if(rainLeft <= marioBody && rainLeft >= marioLeft) {
+                                console.log("yes hit");
+                                console.log('rain left = ' + rainLeft);
+                                console.log('marioBody = ' + marioBody);
+                                console.log('marioLeft = ' + marioLeft);
+
+                                /*alert("You've been burned by ACID RAIN!!");*/
+
+                                //gameIsOn = false;
+                                rainHit = true;
+
+                                /*$('.play').show();
+                                $('.rain').css('top', '-20px');
+                                $('.rain').stop();*/
+
+                            }
+                            else {
+                                console.log("not hit");
+                                console.log('rain left = ' + rainLeft);
+                                console.log('marioBody = ' + marioBody);
+                                console.log('marioLeft = ' + marioLeft);
+                                rainHit = false;
+                            }
+                            //isRainHit();
+                            /*else {
+                                $('.rain').css('top', '-20px');
+                                rainFall();
+                                console.log('rainFall not rainHit = ' + rainHit);
+                            }*/
+
+                            rainFall();
+                        });
+                        
+                        //isRainHit();
+
+                    });
+                }        
                 
+               
+
+
             }
+
+            /*console.log('rainHit = ' + rainHit);
+            console.log('gameIsOn = ' + gameIsOn);*/
+
+            /*function isRainHit() {
+                //if(gameIsOn) {
+                    if(rainHit) {
+                        $('.play').show();
+                        $('.rain').css('top', '-20px');
+                        $('.rain').stop();
+                        gameIsOn = false;
+                    }
+                    else {
+                        console.log('game is on and rain not hit');
+                        $('.rain').css('top', '-20px');
+                        rainFall();
+                    }
+                //}
+            }*/
  
 });
