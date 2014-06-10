@@ -13,24 +13,24 @@ $(document).ready(function() {
     var rainHit = false;
     //console.log(rainGround);
 
+    function gameReset() {
+        $('.play').hide();
+        rainFall();
+        gameIsOn = true;
+        rainHit = false;
+    
+        console.log('rainHit = ' + rainHit);
+        console.log('gameIsOn = ' + gameIsOn);
+    }
+
     $('.play').click(function() {
-       $('.play').hide();
-       rainFall();
-       gameIsOn = true;
-       rainHit = false;
-       console.log('rainHit = ' + rainHit);
-       console.log('gameIsOn = ' + gameIsOn);
+       gameReset();
     });
 
             $(document).keydown(function(key) {
                 switch(parseInt(key.which)) {
                     case 13:
-                        $('.play').hide();
-                       rainFall();
-                       gameIsOn = true;
-                       rainHit = false;
-                       console.log('rainHit = ' + rainHit);
-                       console.log('gameIsOn = ' + gameIsOn);
+                        gameReset();
                         break;
         			case 65:
                         //console.log(parseInt($('.character').css('left')));
@@ -86,6 +86,7 @@ $(document).ready(function() {
 
                     rainHit = false;
                     //alert("hit");
+                    $('.character').css('left', '0px');
                 }
 
                 else {
@@ -115,6 +116,8 @@ $(document).ready(function() {
 
                                 //gameIsOn = false;
                                 rainHit = true;
+                                console.log('rain hit identity = ' + $(this).attr('class'));
+                                console.log('rain hit y-pos = ' + $(this).css('top'));
 
                                 /*$('.play').show();
                                 $('.rain').css('top', '-20px');
