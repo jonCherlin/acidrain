@@ -15,6 +15,8 @@ $(document).ready(function() {
         rainFall();
         gameIsOn = true;
         rainHit = false;
+        marioLeft = 0;
+        marioBody = marioLeft + marioWidth;
     
         console.log('rainHit = ' + rainHit);
         console.log('gameIsOn = ' + gameIsOn);
@@ -63,7 +65,7 @@ $(document).ready(function() {
 	});
     function rainFall() {
 
-        console.log('rainFall rainHit = ' + rainHit);
+        //console.log('rainFall rainHit = ' + rainHit);
 
         if(rainHit) {
             alert("You've been burned by ACID RAIN!!");
@@ -100,6 +102,9 @@ $(document).ready(function() {
                         console.log('marioLeft = ' + marioLeft);
 
                         rainHit = true;
+
+
+
                         console.log('rain hit identity = ' + $(this).attr('class'));
                         console.log('rain hit x-pos = ' + $(this).css('left'));
                         console.log('rain hit y-pos = ' + $(this).css('top'));
@@ -111,6 +116,10 @@ $(document).ready(function() {
                         console.log('marioBody = ' + marioBody);
                         console.log('marioLeft = ' + marioLeft);
                         rainHit = false;
+
+                        console.log('rain hit x-pos and identity = ' + $(this).css('left') + $(this).attr('class'));
+                        console.log('rain hit y-pos and identity = ' + $(this).css('top') + $(this).attr('class'));
+                        console.log('break');
                     }
                     
                     rainFall();
