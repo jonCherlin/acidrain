@@ -9,6 +9,7 @@ $(document).ready(function() {
     var marioBody = marioLeft + marioWidth;
     var rainGround = parseInt($('body').height()) - parseInt($('.ground').height()) - 13;
     var rainHit = false;
+    var rainNum = 0;
 
     function gameReset() {
         $('.play').hide();
@@ -17,6 +18,8 @@ $(document).ready(function() {
         rainHit = false;
         marioLeft = 0;
         marioBody = marioLeft + marioWidth;
+
+        $('.character').css('left', marioLeft);
     
         console.log('rainHit = ' + rainHit);
         console.log('gameIsOn = ' + gameIsOn);
@@ -66,6 +69,11 @@ $(document).ready(function() {
     function rainFall() {
 
         //console.log('rainFall rainHit = ' + rainHit);
+        rainNum++;
+        console.log('rainNum = ' + rainNum);
+
+        //$('.rain').css('top', '-20px');
+        //$('.rain').css('left', '0px');
 
         if(rainHit) {
             alert("You've been burned by ACID RAIN!!");
@@ -73,26 +81,35 @@ $(document).ready(function() {
 
             $('.rain').each(function() {
                 $(this).css('top', '-20px');
+                $(this).css('left', '0px');
                 $(this).stop(true);
             });
 
 
 
             rainHit = false;
-            $('.character').css('left', '0px');
+            //$('.character').css('left', '0px');
         }
 
         else {
+            
             $('.rain').each(function() {
+                
+                //$(this).addClass('rain_' + rainNum);
+                
                 randomLeft = Math.floor(Math.random() * 1024 + 1);
 
                 parseInt($(this).css('left', randomLeft));
 
                 rainLeft = parseInt($(this).css('left'));
 
-                 $(this).css('top', '-20px');
+                console.log('rain left before hit = ' + rainLeft);
+                console.log('marioBody before hit = ' + marioBody);
+                console.log('marioLeft before hit = ' + marioLeft);
 
-                 $(this).animate({top: rainGround}, 900, function() {
+                 //$(this).css('top', '-20px');
+
+                 $(this).animate({top: rainGround}, 5000, function() {
                     console.log(rainLeft);
 
                     if(rainLeft <= marioBody && rainLeft >= marioLeft) {
@@ -115,7 +132,10 @@ $(document).ready(function() {
                         console.log('rain left = ' + rainLeft);
                         console.log('marioBody = ' + marioBody);
                         console.log('marioLeft = ' + marioLeft);
+
                         rainHit = false;
+
+                        $('.rain').css('top', '-20px');
 
                         console.log('rain hit x-pos and identity = ' + $(this).css('left') + $(this).attr('class'));
                         console.log('rain hit y-pos and identity = ' + $(this).css('top') + $(this).attr('class'));
