@@ -21,8 +21,8 @@ $(document).ready(function() {
 
         $('.character').css('left', marioLeft);
     
-        console.log('rainHit = ' + rainHit);
-        console.log('gameIsOn = ' + gameIsOn);
+        //console.log('rainHit = ' + rainHit);
+        //console.log('gameIsOn = ' + gameIsOn);
     }
 
     $('.play').click(function() {
@@ -35,7 +35,7 @@ $(document).ready(function() {
                 gameReset();
                 break;
 			case 65:
-            case 37:
+            case 37: //Walk Left
                 if(parseInt($('.character').css('left')) > 0) {
 
                    var walkLeft = parseInt($('.character').css('left'));
@@ -53,7 +53,7 @@ $(document).ready(function() {
 				}
 				break;
 			case 68:
-            case 39:
+            case 39: //Walk Right
                 if(parseInt($('.character').css('left')) + (marioWidth) < 1024) {
                     var walkRight = parseInt($('.character').css('left'));
                     $('.character').css('left', walkRight += 64);
@@ -70,7 +70,7 @@ $(document).ready(function() {
 
         //console.log('rainFall rainHit = ' + rainHit);
         rainNum++;
-        console.log('rainNum = ' + rainNum);
+        //console.log('rainNum = ' + rainNum);
 
         //$('.rain').css('top', '-20px');
         //$('.rain').css('left', '0px');
@@ -103,43 +103,23 @@ $(document).ready(function() {
 
                 rainLeft = parseInt($(this).css('left'));
 
-                console.log('rain left before hit = ' + rainLeft);
-                console.log('marioBody before hit = ' + marioBody);
-                console.log('marioLeft before hit = ' + marioLeft);
-
                  //$(this).css('top', '-20px');
 
-                 $(this).animate({top: rainGround}, 5000, function() {
-                    console.log(rainLeft);
+                 //$(this).animate({top: rainGround}, 950, function() {
+                $(this).animate({top: rainGround}, 5000, function() {
+                    //console.log(rainLeft);
 
                     if(rainLeft <= marioBody && rainLeft >= marioLeft) {
-                        console.log("yes hit");
-                        console.log('rain left = ' + rainLeft);
-                        console.log('marioBody = ' + marioBody);
-                        console.log('marioLeft = ' + marioLeft);
 
                         rainHit = true;
-
-
-
-                        console.log('rain hit identity = ' + $(this).attr('class'));
-                        console.log('rain hit x-pos = ' + $(this).css('left'));
-                        console.log('rain hit y-pos = ' + $(this).css('top'));
                     
                     }
                     else {
-                        console.log("not hit");
-                        console.log('rain left = ' + rainLeft);
-                        console.log('marioBody = ' + marioBody);
-                        console.log('marioLeft = ' + marioLeft);
-
+                        
                         rainHit = false;
 
                         $('.rain').css('top', '-20px');
-
-                        console.log('rain hit x-pos and identity = ' + $(this).css('left') + $(this).attr('class'));
-                        console.log('rain hit y-pos and identity = ' + $(this).css('top') + $(this).attr('class'));
-                        console.log('break');
+                        
                     }
                     
                     rainFall();
