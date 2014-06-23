@@ -11,6 +11,9 @@ $(document).ready(function() {
     var rainHit = false;
     var rainNum = 0;
 
+    var rainTop;
+    var rainTimerSet;
+
     function gameReset() {
         $('.play').hide();
         rainFall();
@@ -72,7 +75,8 @@ $(document).ready(function() {
         rainNum++;
         //console.log('rainNum = ' + rainNum);
 
-        //$('.rain').css('top', '-20px');
+        $('.rain').css('top', '-20px');
+        //window.clearInterval(rainTimerSet);
         //$('.rain').css('left', '0px');
 
         if(rainHit) {
@@ -82,7 +86,8 @@ $(document).ready(function() {
             $('.rain').each(function() {
                 $(this).css('top', '-20px');
                 $(this).css('left', '0px');
-                $(this).stop(true);
+                //$(this).stop(true);
+                clearInterval(rainTimerSet);
             });
 
 
@@ -106,7 +111,7 @@ $(document).ready(function() {
                  //$(this).css('top', '-20px');
 
                  //$(this).animate({top: rainGround}, 950, function() {
-                $(this).animate({top: rainGround}, 5000, function() {
+                /*$(this).animate({top: rainGround}, 5000, function() {
                     //console.log(rainLeft);
 
                     if(rainLeft <= marioBody && rainLeft >= marioLeft) {
@@ -123,7 +128,35 @@ $(document).ready(function() {
                     }
                     
                     rainFall();
-                });
+                });*/
+                clearInterval(rainTimerSet);
+                rainTimerSet = setInterval(function(){rainTimer()}, 8);
+                function rainTimer() {
+                    rainTop = parseInt($('.rain').css('top'));
+
+                    if(rainTop <= rainGround) {
+                        rainTop += 10;
+                        $('.rain').css('top', rainTop);
+
+                        if((parseInt($('.rain1').css('left')) <= marioBody && parseInt($('.rain1').css('left')) >= marioLeft) || (parseInt($('.rain2').css('left')) <= marioBody && parseInt($('.rain2').css('left')) >= marioLeft)) {
+
+                            rainHit = true;
+                        
+                        }
+                        else {
+                            
+                            rainHit = false;
+
+                            //$('.rain').css('top', '-20px');
+                            
+                        }
+
+                    }
+                    else {
+                        //$('.rain').css('top', '-20px');
+                        rainFall();
+                    }
+                }
                 
             });
         }        
