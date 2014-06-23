@@ -10,9 +10,12 @@ $(document).ready(function() {
     var rainGround = parseInt($('body').height()) - parseInt($('.ground').height()) - 13;
     var rainHit = false;
     var rainNum = 0;
+    var rainNumClass;
 
     var rainTop;
     var rainTimerSet;
+    var rainElements = $('.rain');
+    var randomSpeed;
 
     function gameReset() {
         $('.play').hide();
@@ -97,52 +100,47 @@ $(document).ready(function() {
         }
 
         else {
-            
-            $('.rain').each(function() {
+
+            for(var i = 0; i < rainElements.length; i++) {
+
+                rain = rainElements.eq(i);
                 
-                //$(this).addClass('rain_' + rainNum);
+                rainNum = i + 1;
+                rainNum = 'rain' + rainNum.toString();
+                //console.log(rainNum);
+                rain.addClass(rainNum);
+                rainNumClass = '.' + rainNum;
+                //console.log('rainNumClass = ' + rainNumClass);
                 
                 randomLeft = Math.floor(Math.random() * 1024 + 1);
+                randomSpeed = Math.floor(Math.random() * 20 + 10);
 
-                parseInt($(this).css('left', randomLeft));
+                $(rain).css('left', randomLeft);
+                //console.log('rainNum = ' + rainNum);
+                //console.log('rainNumClass = ' + rainNumClass);
+                rainLeft = parseInt($(rainNumClass).css('left'));
 
-                rainLeft = parseInt($(this).css('left'));
+                //console.log('rainLeft = ' + rainLeft);
 
-                 //$(this).css('top', '-20px');
-
-                 //$(this).animate({top: rainGround}, 950, function() {
-                /*$(this).animate({top: rainGround}, 5000, function() {
-                    //console.log(rainLeft);
-
-                    if(rainLeft <= marioBody && rainLeft >= marioLeft) {
-
-                        rainHit = true;
-                    
-                    }
-                    else {
-                        
-                        rainHit = false;
-
-                        $('.rain').css('top', '-20px');
-                        
-                    }
-                    
-                    rainFall();
-                });*/
                 clearInterval(rainTimerSet);
-                rainTimerSet = setInterval(function(){rainTimer()}, 8);
-                
+                rainTimerSet = setInterval(function(){rainTimer()}, 1000);
+                //console.log('rainNumClass = ' + rainNumClass);
                 function rainTimer() {
+                    //console.log('timer');
+                    //console.log('rainNumClass = ' + rainNumClass);
                     
                     rainTop = parseInt($('.rain').css('top'));
 
                     if(rainTop <= rainGround) {
-                        rainTop += 10;
+                        rainTop += randomSpeed;
                         $('.rain').css('top', rainTop);
                     }
                     else {
-                        //$('.rain').css('top', '-20px');
-                        if((parseInt($('.rain1').css('left')) <= marioBody && parseInt($('.rain1').css('left')) >= marioLeft) || (parseInt($('.rain2').css('left')) <= marioBody && parseInt($('.rain2').css('left')) >= marioLeft)) {
+                        
+                        console.log('rainNumClass = ' + rainNumClass);
+                        console.log('rainLeft = ' + rainLeft);
+
+                        if(rainLeft <= marioBody && rainLeft >= marioLeft) {
 
                             rainHit = true;
                         
@@ -157,8 +155,7 @@ $(document).ready(function() {
                         rainFall();
                     }
                 }
-                
-            });
+            }
         }        
     }
 
