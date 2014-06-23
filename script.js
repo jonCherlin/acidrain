@@ -131,13 +131,17 @@ $(document).ready(function() {
                 });*/
                 clearInterval(rainTimerSet);
                 rainTimerSet = setInterval(function(){rainTimer()}, 8);
+                
                 function rainTimer() {
+                    
                     rainTop = parseInt($('.rain').css('top'));
 
                     if(rainTop <= rainGround) {
                         rainTop += 10;
                         $('.rain').css('top', rainTop);
-
+                    }
+                    else {
+                        //$('.rain').css('top', '-20px');
                         if((parseInt($('.rain1').css('left')) <= marioBody && parseInt($('.rain1').css('left')) >= marioLeft) || (parseInt($('.rain2').css('left')) <= marioBody && parseInt($('.rain2').css('left')) >= marioLeft)) {
 
                             rainHit = true;
@@ -150,10 +154,6 @@ $(document).ready(function() {
                             //$('.rain').css('top', '-20px');
                             
                         }
-
-                    }
-                    else {
-                        //$('.rain').css('top', '-20px');
                         rainFall();
                     }
                 }
