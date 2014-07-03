@@ -1,6 +1,8 @@
 function Rain ( params ) {
     this.speed = params.speed;
     this.template = params.template;
+    this.clearTimer = params.clearTimer;
+    this.rainTimerSet = params.rainTimerSet;
 }
 
 $(document).ready(function() {
@@ -101,7 +103,7 @@ $(document).ready(function() {
             $('#content_wrap').prepend(rain1.template);
         }*/
 
-        for(i = 1; i <= 10; i++) {
+        for(i = 1; i <= 2; i++) {
             //console.log(i);
 
             /*var variableDynamic = 'Test';
@@ -114,7 +116,9 @@ $(document).ready(function() {
 
             window['rain' + i] = new Rain({ 
                 template: '<div class="rain"></div>',
-                speed: 10 
+                speed: 10,
+                clearTimer: clearInterval(rainTimerSet),
+                rainTimerSet: setInterval(function(){rainTimer()}, 50) 
             });;
 
             rainCollection.push(window['rain' + i]);
@@ -189,8 +193,9 @@ $(document).ready(function() {
 
                 //console.log('rainLeft = ' + rainLeft);
 
-                clearInterval(rainTimerSet);
-                rainTimerSet = setInterval(function(){rainTimer()}, 50);
+                //clearInterval(rainTimerSet);
+                //rainTimerSet = setInterval(function(){rainTimer()}, 50);
+
                 //console.log('rainNumClass = ' + rainNumClass);
                 
             }
