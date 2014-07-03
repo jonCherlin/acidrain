@@ -14,12 +14,13 @@ $(document).ready(function() {
 
     var rainTop;
     var rainTimerSet;
-    var rainElements = $('.rain');
+    var rainElements;
     var randomSpeed;
 
     function gameReset() {
         $('.play').hide();
-        rainFall();
+        rainCreate();
+        //rainFall();
         gameIsOn = true;
         rainHit = false;
         marioLeft = 0;
@@ -72,13 +73,29 @@ $(document).ready(function() {
 				break;
 		}
 	});
+
+    function rainCreate() {
+        $('.rain').remove();
+        for(i = 1; i <= 2; i++) {
+            $('#content_wrap').prepend('<div class="rain"></div>');
+        }
+        console.log('raincreate');
+
+        rainElements = $('.rain');
+
+        rainFall();
+    }
+
     function rainFall() {
+        //console.log('rainfall');
 
         //console.log('rainFall rainHit = ' + rainHit);
         rainNum++;
         //console.log('rainNum = ' + rainNum);
 
         $('.rain').css('top', '-20px');
+        //rainTop = parseInt($('.rain').css('top'));
+
         //window.clearInterval(rainTimerSet);
         //$('.rain').css('left', '0px');
 
@@ -100,10 +117,13 @@ $(document).ready(function() {
         }
 
         else {
+            console.log('rainfall');
 
             for(var i = 0; i < rainElements.length; i++) {
 
                 rain = rainElements.eq(i);
+
+                //console.log(rainElements.eq(i));
                 
                 rainNum = i + 1;
                 rainNum = 'rain' + rainNum.toString();
@@ -116,6 +136,7 @@ $(document).ready(function() {
                 randomSpeed = Math.floor(Math.random() * 20 + 10);
 
                 $(rain).css('left', randomLeft);
+
                 //console.log('rainNum = ' + rainNum);
                 //console.log('rainNumClass = ' + rainNumClass);
                 rainLeft = parseInt($(rainNumClass).css('left'));
@@ -123,13 +144,22 @@ $(document).ready(function() {
                 //console.log('rainLeft = ' + rainLeft);
 
                 clearInterval(rainTimerSet);
-                rainTimerSet = setInterval(function(){rainTimer()}, 1000);
+                rainTimerSet = setInterval(function(){rainTimer()}, 50);
                 //console.log('rainNumClass = ' + rainNumClass);
-                function rainTimer() {
+                
+            }
+        }        
+    }
+
+    function rainTimer() {
                     //console.log('timer');
                     //console.log('rainNumClass = ' + rainNumClass);
+
+                    //second raindrop must be overriding rain1
+                    //console.log(rain);
                     
                     rainTop = parseInt($('.rain').css('top'));
+                    //$(rain).css('top', '-20px');
 
                     if(rainTop <= rainGround) {
                         rainTop += randomSpeed;
@@ -137,8 +167,8 @@ $(document).ready(function() {
                     }
                     else {
                         
-                        console.log('rainNumClass = ' + rainNumClass);
-                        console.log('rainLeft = ' + rainLeft);
+                        //console.log('rainNumClass = ' + rainNumClass);
+                        //console.log('rainLeft = ' + rainLeft);
 
                         if(rainLeft <= marioBody && rainLeft >= marioLeft) {
 
@@ -155,8 +185,5 @@ $(document).ready(function() {
                         rainFall();
                     }
                 }
-            }
-        }        
-    }
 
 });
