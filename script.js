@@ -1,4 +1,10 @@
+function Rain ( params ) {
+    this.speed = params.speed;
+    this.template = params.template;
+}
+
 $(document).ready(function() {
+
     var gameIsOn = false;
     var randomLeft;
     var rainLeft;
@@ -16,6 +22,8 @@ $(document).ready(function() {
     var rainTimerSet;
     var rainElements;
     var randomSpeed;
+
+    var rain;
 
     function gameReset() {
         $('.play').hide();
@@ -76,9 +84,47 @@ $(document).ready(function() {
 
     function rainCreate() {
         $('.rain').remove();
-        for(i = 1; i <= 2; i++) {
-            $('#content_wrap').prepend('<div class="rain"></div>');
+
+        var rainCollection = new Array();
+
+        /*var rain1 = new Rain( 
+            { speed: 10, template: '<div class="rain_1"></div>' } 
+        );
+        var rain2 = new Rain( 
+            { speed: 10, template: '<div class="rain_2"></div>' } 
+        );*/
+
+        //rainCollection.push(rain1);
+        //rainCollection.push(rain2);
+
+        /*for(i = 1; i <= 2; i++) {
+            $('#content_wrap').prepend(rain1.template);
+        }*/
+
+        for(i = 1; i <= 10; i++) {
+            //console.log(i);
+
+            /*var variableDynamic = 'Test';
+            window['variableName' + variableDynamic] = 'your value';
+            console.log(variableNameTest);*/
+
+            /*var rain = new Rain( 
+                { speed: 10, template: '<div class="rain_' + i + '"></div>' } 
+            );*/
+
+            window['rain' + i] = new Rain({ 
+                template: '<div class="rain"></div>',
+                speed: 10 
+            });;
+
+            rainCollection.push(window['rain' + i]);
+
+            $('#content_wrap').prepend(window['rain' + i].template);
+
         }
+
+        console.log('rainCollection = ' + rainCollection);
+
         console.log('raincreate');
 
         rainElements = $('.rain');
