@@ -1,5 +1,5 @@
 function Rain ( params ) {
-    this.speed = params.speed;
+    //this.speed = params.speed;
     this.template = params.template;
     this.clearTimer = params.clearTimer;
     this.rainTimerSet = params.rainTimerSet;
@@ -115,8 +115,8 @@ $(document).ready(function() {
             );*/
 
             window['rain' + i] = new Rain({ 
-                template: '<div class="rain"></div>',
-                speed: 10,
+                template: '<div id="rain_' + i + '" class=""></div>',
+                //speed: 10,
                 clearTimer: clearInterval(rainTimerSet),
                 rainTimerSet: setInterval(function(){rainTimer()}, 50) 
             });;
