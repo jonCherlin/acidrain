@@ -1,9 +1,9 @@
-function Rain ( params ) {
-    //this.speed = params.speed;
-    this.template = params.template;
-    this.clearTimer = params.clearTimer;
-    this.rainTimerSet = params.rainTimerSet;
-}
+// function Rain ( params ) {
+//     //this.speed = params.speed;
+//     this.template = params.template;
+//     this.clearTimer = params.clearTimer;
+//     this.rainTimerSet = params.rainTimerSet;
+// }
 
 $(document).ready(function() {
 
@@ -84,6 +84,21 @@ $(document).ready(function() {
 		}
 	});
 
+    function Rain ( params ) {
+        //console.log(params);
+        //this.speed = params.speed;
+        this.template = params.template;
+        this.rainName = params.rainName;
+        this.clearTimer = params.clearTimer;
+        this.rainTimerSet = params.rainTimerSet;
+        this.rainFallFunction = params.rainFallFunction;
+        //console.log('this = ' + this.rainId);
+       // console.log(this.rainName);
+        //$(this.rainName).addClass('test');
+
+        this.rainFallFunction();
+    }
+
     function rainCreate() {
         $('.rain').remove();
 
@@ -103,7 +118,7 @@ $(document).ready(function() {
             $('#content_wrap').prepend(rain1.template);
         }*/
 
-        for(i = 1; i <= 2; i++) {
+        for(i = 1; i <= 5; i++) {
             //console.log(i);
 
             /*var variableDynamic = 'Test';
@@ -115,11 +130,41 @@ $(document).ready(function() {
             );*/
 
             window['rain' + i] = new Rain({ 
-                template: '<div id="rain_' + i + '" class=""></div>',
+                template: '<div id="rain_' + i + '" class="rain"></div>',
                 //speed: 10,
+                rainName: '#rain_' + i,
                 clearTimer: clearInterval(rainTimerSet),
-                rainTimerSet: setInterval(function(){rainTimer()}, 50) 
-            });;
+                rainTimerSet: setInterval(function(){rainTimer()}, 50),
+                rainFallFunction: function() {
+                    // //randomTest = Math.floor(Math.random() * 10 + 1);
+                    // //console.log(randomTest);
+                    // for(j = 0; j <= this.rainName.length; j++) {
+                    //     randomTest = Math.floor(Math.random() * 10 + 1);
+                    //     $('#rain_' + j).css('left', randomTest);
+
+                        
+                    // }
+                    var testBoolean = false;
+
+                    if(this.rainName == '#rain_3') {
+                        testBoolean = true;
+                    }
+                    else {
+                        testBoolean = false;
+                    }
+
+                    //console.log(testBoolean);
+
+                    if(testBoolean == true) {
+                        console.log('it is true');
+                    }
+                    else {
+                        console.log('it is false');
+                    }
+
+                }
+                
+            });
 
             rainCollection.push(window['rain' + i]);
 
@@ -127,13 +172,21 @@ $(document).ready(function() {
 
         }
 
-        console.log('rainCollection = ' + rainCollection);
+        //console.log('rainCollection = ' + rainCollection);
 
-        console.log('raincreate');
+       // console.log('raincreate');
 
         rainElements = $('.rain');
 
-        rainFall();
+        //rainFall();
+    }
+
+    function testRainFall(params) {
+        console.log(params);
+        // for(j = 0; j <= params.length; j++) {
+        //     $('#rain_' + j).addClass('test');
+        //     $('#rain_' + j).css('top', '-20px');
+        // }
     }
 
     function rainFall() {
@@ -167,7 +220,7 @@ $(document).ready(function() {
         }
 
         else {
-            console.log('rainfall');
+            //console.log('rainfall');
 
             for(var i = 0; i < rainElements.length; i++) {
 
@@ -183,7 +236,7 @@ $(document).ready(function() {
                 //console.log('rainNumClass = ' + rainNumClass);
                 
                 randomLeft = Math.floor(Math.random() * 1024 + 1);
-                randomSpeed = Math.floor(Math.random() * 20 + 10);
+                randomSpeed = Math.floor(Math.random() * 10 + 1);
 
                 $(rain).css('left', randomLeft);
 
