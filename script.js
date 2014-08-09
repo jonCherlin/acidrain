@@ -76,7 +76,7 @@ $(document).ready(function() {
 
     function rainCreate() {
         $('.rain').remove();
-        for(i = 1; i <= 1; i++) {
+        for(i = 1; i <= 2; i++) {
             $('#content_wrap').prepend('<div class="rain"></div>');
         }
         console.log('raincreate');
@@ -158,19 +158,23 @@ $(document).ready(function() {
         //second raindrop must be overriding rain1
         //console.log(rain);
         
-        rainTop = parseInt($('.rain').css('top'));
+        rainTop1 = parseInt($('.rain1').css('top'));
+        rainTop2 = parseInt($('.rain2').css('top'));
         //$(rain).css('top', '-20px');
 
-        if(rainTop <= rainGround) {
-            rainTop += randomSpeed;
-            $('.rain').css('top', rainTop);
+        if((rainTop1 <= rainGround) || (rainTop2 <= rainGround)) {
+            rainTop1 += randomSpeed;
+            $('.rain1').css('top', rainTop1);
+            rainTop2 += randomSpeed;
+            $('.rain2').css('top', rainTop2);
         }
+        
         else {
             
             //console.log('rainNumClass = ' + rainNumClass);
             //console.log('rainLeft = ' + rainLeft);
 
-            if(rainLeft <= marioBody && rainLeft >= marioLeft) {
+            if((parseInt($('.rain1').css('left')) <= marioBody && rainLeft >= marioLeft) || (parseInt($('.rain2').css('left')) <= marioBody && rainLeft >= marioLeft)) {
 
                 rainHit = true;
             
