@@ -1,12 +1,4 @@
-// function Rain ( params ) {
-//     //this.speed = params.speed;
-//     this.template = params.template;
-//     this.clearTimer = params.clearTimer;
-//     this.rainTimerSet = params.rainTimerSet;
-// }
-
 $(document).ready(function() {
-
     var gameIsOn = false;
     var randomLeft;
     var rainLeft;
@@ -24,8 +16,6 @@ $(document).ready(function() {
     var rainTimerSet;
     var rainElements;
     var randomSpeed;
-
-    var rain;
 
     function gameReset() {
         $('.play').hide();
@@ -51,7 +41,7 @@ $(document).ready(function() {
             case 13:
                 gameReset();
                 break;
-			case 65:
+            case 65:
             case 37: //Walk Left
                 if(parseInt($('.character').css('left')) > 0) {
 
@@ -60,16 +50,16 @@ $(document).ready(function() {
                     marioLeft = parseInt($('.character').css('left')); 
                     marioBody = marioLeft + marioWidth;
                 }
-				
-				else if (parseInt($('.character').css('left')) + (marioWidth) <= 0) {
-					$('.character').animate({left: "+=0px"}, 'fast', function() {
-						$('.character').css('left', 0);
-						console.log('hit left wall = ');
-						console.log($('.character').css('left'));
-					});
-				}
-				break;
-			case 68:
+                
+                else if (parseInt($('.character').css('left')) + (marioWidth) <= 0) {
+                    $('.character').animate({left: "+=0px"}, 'fast', function() {
+                        $('.character').css('left', 0);
+                        console.log('hit left wall = ');
+                        console.log($('.character').css('left'));
+                    });
+                }
+                break;
+            case 68:
             case 39: //Walk Right
                 if(parseInt($('.character').css('left')) + (marioWidth) < 1024) {
                     var walkRight = parseInt($('.character').css('left'));
@@ -77,116 +67,23 @@ $(document).ready(function() {
                     marioLeft = parseInt($('.character').css('left')); 
                     marioBody = marioLeft + marioWidth;
                 }
-				
-				break;
-			defaultkey: "value"
-				break;
-		}
-	});
-
-    function Rain ( params ) {
-        //console.log(params);
-        //this.speed = params.speed;
-        this.template = params.template;
-        this.rainName = params.rainName;
-        this.clearTimer = params.clearTimer;
-        this.rainTimerSet = params.rainTimerSet;
-        this.rainFallFunction = params.rainFallFunction;
-        //console.log('this = ' + this.rainId);
-       // console.log(this.rainName);
-        //$(this.rainName).addClass('test');
-
-        this.rainFallFunction();
-    }
+                
+                break;
+            defaultkey: "value"
+                break;
+        }
+    });
 
     function rainCreate() {
         $('.rain').remove();
-
-        var rainCollection = new Array();
-
-        /*var rain1 = new Rain( 
-            { speed: 10, template: '<div class="rain_1"></div>' } 
-        );
-        var rain2 = new Rain( 
-            { speed: 10, template: '<div class="rain_2"></div>' } 
-        );*/
-
-        //rainCollection.push(rain1);
-        //rainCollection.push(rain2);
-
-        /*for(i = 1; i <= 2; i++) {
-            $('#content_wrap').prepend(rain1.template);
-        }*/
-
-        for(i = 1; i <= 5; i++) {
-            //console.log(i);
-
-            /*var variableDynamic = 'Test';
-            window['variableName' + variableDynamic] = 'your value';
-            console.log(variableNameTest);*/
-
-            /*var rain = new Rain( 
-                { speed: 10, template: '<div class="rain_' + i + '"></div>' } 
-            );*/
-
-            window['rain' + i] = new Rain({ 
-                template: '<div id="rain_' + i + '" class="rain"></div>',
-                //speed: 10,
-                rainName: '#rain_' + i,
-                clearTimer: clearInterval(rainTimerSet),
-                rainTimerSet: setInterval(function(){rainTimer()}, 50),
-                rainFallFunction: function() {
-                    // //randomTest = Math.floor(Math.random() * 10 + 1);
-                    // //console.log(randomTest);
-                    // for(j = 0; j <= this.rainName.length; j++) {
-                    //     randomTest = Math.floor(Math.random() * 10 + 1);
-                    //     $('#rain_' + j).css('left', randomTest);
-
-                        
-                    // }
-                    var testBoolean = false;
-
-                    if(this.rainName == '#rain_3') {
-                        testBoolean = true;
-                    }
-                    else {
-                        testBoolean = false;
-                    }
-
-                    //console.log(testBoolean);
-
-                    if(testBoolean == true) {
-                        console.log('it is true');
-                    }
-                    else {
-                        console.log('it is false');
-                    }
-
-                }
-                
-            });
-
-            rainCollection.push(window['rain' + i]);
-
-            $('#content_wrap').prepend(window['rain' + i].template);
-
+        for(i = 1; i <= 1; i++) {
+            $('#content_wrap').prepend('<div class="rain"></div>');
         }
-
-        //console.log('rainCollection = ' + rainCollection);
-
-       // console.log('raincreate');
+        console.log('raincreate');
 
         rainElements = $('.rain');
 
-        //rainFall();
-    }
-
-    function testRainFall(params) {
-        console.log(params);
-        // for(j = 0; j <= params.length; j++) {
-        //     $('#rain_' + j).addClass('test');
-        //     $('#rain_' + j).css('top', '-20px');
-        // }
+        rainFall();
     }
 
     function rainFall() {
@@ -220,7 +117,7 @@ $(document).ready(function() {
         }
 
         else {
-            //console.log('rainfall');
+            console.log('rainfall');
 
             for(var i = 0; i < rainElements.length; i++) {
 
@@ -236,7 +133,7 @@ $(document).ready(function() {
                 //console.log('rainNumClass = ' + rainNumClass);
                 
                 randomLeft = Math.floor(Math.random() * 1024 + 1);
-                randomSpeed = Math.floor(Math.random() * 10 + 1);
+                randomSpeed = Math.floor(Math.random() * 20 + 10);
 
                 $(rain).css('left', randomLeft);
 
@@ -246,9 +143,8 @@ $(document).ready(function() {
 
                 //console.log('rainLeft = ' + rainLeft);
 
-                //clearInterval(rainTimerSet);
-                //rainTimerSet = setInterval(function(){rainTimer()}, 50);
-
+                clearInterval(rainTimerSet);
+                rainTimerSet = setInterval(function(){rainTimer()}, 50);
                 //console.log('rainNumClass = ' + rainNumClass);
                 
             }
@@ -256,38 +152,38 @@ $(document).ready(function() {
     }
 
     function rainTimer() {
-                    //console.log('timer');
-                    //console.log('rainNumClass = ' + rainNumClass);
+        //console.log('timer');
+        //console.log('rainNumClass = ' + rainNumClass);
 
-                    //second raindrop must be overriding rain1
-                    //console.log(rain);
-                    
-                    rainTop = parseInt($('.rain').css('top'));
-                    //$(rain).css('top', '-20px');
+        //second raindrop must be overriding rain1
+        //console.log(rain);
+        
+        rainTop = parseInt($('.rain').css('top'));
+        //$(rain).css('top', '-20px');
 
-                    if(rainTop <= rainGround) {
-                        rainTop += randomSpeed;
-                        $('.rain').css('top', rainTop);
-                    }
-                    else {
-                        
-                        //console.log('rainNumClass = ' + rainNumClass);
-                        //console.log('rainLeft = ' + rainLeft);
+        if(rainTop <= rainGround) {
+            rainTop += randomSpeed;
+            $('.rain').css('top', rainTop);
+        }
+        else {
+            
+            //console.log('rainNumClass = ' + rainNumClass);
+            //console.log('rainLeft = ' + rainLeft);
 
-                        if(rainLeft <= marioBody && rainLeft >= marioLeft) {
+            if(rainLeft <= marioBody && rainLeft >= marioLeft) {
 
-                            rainHit = true;
-                        
-                        }
-                        else {
-                            
-                            rainHit = false;
+                rainHit = true;
+            
+            }
+            else {
+                
+                rainHit = false;
 
-                            //$('.rain').css('top', '-20px');
-                            
-                        }
-                        rainFall();
-                    }
-                }
+                //$('.rain').css('top', '-20px');
+                
+            }
+            rainFall();
+        }
+    }
 
 });
