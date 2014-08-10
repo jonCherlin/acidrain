@@ -157,7 +157,7 @@ $(document).ready(function() {
                 //console.log('rainLeft = ' + rainLeft);
 
                 clearInterval(rainTimerSet);
-                rainTimerSet = setInterval(function(){rainTimer()}, 50);
+                rainTimerSet = setInterval(function(){rainTimerSet()}, 50);
                 //console.log('rainNumClass = ' + rainNumClass);
 
                 $.fn.testFunction = function() {
