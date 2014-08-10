@@ -130,6 +130,7 @@ $(document).ready(function() {
                 //console.log(rainNum);
                 rain.addClass(rainNum);
 
+                //jQuery Prototype
                 $.fn.testFunction = function() {
                     console.log(this);
                 }
