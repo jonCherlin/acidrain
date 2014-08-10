@@ -17,6 +17,8 @@ $(document).ready(function() {
     var rainElements;
     var randomSpeed;
 
+    var rainCond;
+
     function gameReset() {
         $('.play').hide();
         rainCreate();
@@ -131,6 +133,11 @@ $(document).ready(function() {
                 rain.addClass(rainNum);
                 rainNumClass = '.' + rainNum;
                 //console.log('rainNumClass = ' + rainNumClass);
+
+                rainCond = "(parseInt($(rainNumClass).css('top')) <= rainGround) || ";
+                // console.log(eval(rainCond).value);
+
+                //eval("parseInt($('.rain1').css('top'))");
                 
                 randomLeft = Math.floor(Math.random() * 1024 + 1);
                 randomSpeed = Math.floor(Math.random() * 20 + 10);
@@ -152,6 +159,7 @@ $(document).ready(function() {
     }
 
     function rainTimer() {
+
         //console.log('timer');
         //console.log('rainNumClass = ' + rainNumClass);
 
@@ -168,6 +176,13 @@ $(document).ready(function() {
             rainTop2 += randomSpeed;
             $('.rain2').css('top', rainTop2);
         }
+
+        /*if(eval(rainCond) || (rainTop2 <= rainGround)) {
+            rainTop1 += randomSpeed;
+            $('.rain1').css('top', rainTop1);
+            rainTop2 += randomSpeed;
+            $('.rain2').css('top', rainTop2);
+        }*/
         
         else {
             
@@ -188,6 +203,17 @@ $(document).ready(function() {
             }
             rainFall();
         }
+
+        // for(var j = 0; j < rainElements.length; j++) {
+
+        //     rainNumCond = j + 1;
+        //     rainNumCond = '.rain' + rainNumCond.toString();
+           
+        //    // rainCond = "(parseInt($('.rain'" + (j + 1).toString + ").css('top')) <= rainGround) ||";
+
+        //     console.log(rainNumCond);
+
+        // }
     }
 
 });
