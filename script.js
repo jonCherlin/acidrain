@@ -131,11 +131,11 @@ $(document).ready(function() {
                 rain.addClass(rainNum);
 
                 //jQuery Prototype
-                $.fn.testFunction = function() {
-                    console.log(this);
-                }
+                // $.fn.testFunction = function() {
+                //     console.log(this);
+                // }
 
-                $(rain).testFunction();
+                // $(rain).testFunction();
 
                 rainNumClass = '.' + rainNum;
                 //console.log('rainNumClass = ' + rainNumClass);
@@ -157,8 +157,16 @@ $(document).ready(function() {
                 //console.log('rainLeft = ' + rainLeft);
 
                 clearInterval(rainTimerSet);
-                rainTimerSet = setInterval(function(){rainTimer()}, 50);
+                rainTimerSet = setInterval(function(){testFunction()}, 50);
                 //console.log('rainNumClass = ' + rainNumClass);
+
+                $.fn.testFunction = function() {
+                    if($(this).hasClass('rain1')) {
+                        console.log($(this).attr('class'));
+                    }
+                }
+
+                $(rain).testFunction();
                 
             }
         }        
