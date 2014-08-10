@@ -124,17 +124,22 @@ $(document).ready(function() {
             for(var i = 0; i < rainElements.length; i++) {
 
                 rain = rainElements.eq(i);
-
-                //console.log(rainElements.eq(i));
                 
                 rainNum = i + 1;
                 rainNum = 'rain' + rainNum.toString();
                 //console.log(rainNum);
                 rain.addClass(rainNum);
+
+                $.fn.testFunction = function() {
+                    console.log(this);
+                }
+
+                $(rain).testFunction();
+
                 rainNumClass = '.' + rainNum;
                 //console.log('rainNumClass = ' + rainNumClass);
 
-                rainCond = "(parseInt($(rainNumClass).css('top')) <= rainGround) || ";
+                //rainCond = "(parseInt($(rainNumClass).css('top')) <= rainGround) || ";
                 // console.log(eval(rainCond).value);
 
                 //eval("parseInt($('.rain1').css('top'))");
