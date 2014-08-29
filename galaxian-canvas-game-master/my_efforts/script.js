@@ -73,7 +73,7 @@ var imageRepository = new function() {
  * Creates the Drawable object which will be the base class for
  * all drawable objects in the game. Sets up defualt variables
  * that all child objects will inherit, as well as the defualt
- * functions. 
+ * functions.
  */
 function Drawable() {
 	this.init = function(x, y, width, height) {
@@ -83,15 +83,21 @@ function Drawable() {
 		this.width = width;
 		this.height = height;
 	}
-	
+
 	this.speed = 0;
 	this.canvasWidth = 0;
 	this.canvasHeight = 0;
-	
+	this.collidableWith = "";
+	this.isColliding = false;
+	this.type = "";
+
 	// Define abstract function to be implemented in child objects
 	this.draw = function() {
 	};
 	this.move = function() {
+	};
+	this.isCollidableWith = function(object) {
+		return (this.collidableWith === object.type);
 	};
 }
 
@@ -140,15 +146,18 @@ function Bullet(object) {
 	};
 
 	/*
-	 * Uses a "drity rectangle" to erase the bullet and moves it.
-	 * Returns true if the bullet moved of the screen, indicating that
+	 * Uses a "dirty rectangle" to erase the bullet and moves it.
+	 * Returns true if the bullet moved off the screen, indicating that
 	 * the bullet is ready to be cleared by the pool, otherwise draws
 	 * the bullet.
 	 */
 	this.draw = function() {
-		this.context.clearRect(this.x-1, this.y-1, this.width+1, this.height+1);
+		this.context.clearRect(this.x-1, this.y-1, this.width+2, this.height+2);
 		this.y -= this.speed;
-		if (self === "bullet" && this.y <= 0 - this.height) {
+		if (this.isColliding) {
+			return true;
+		}
+		else if (self === "bullet" && this.y <= 0 - this.height) {
 			return true;
 		}
 		else if (self === "enemyBullet" && this.y >= this.canvasHeight) {
@@ -161,11 +170,9 @@ function Bullet(object) {
 			else if (self === "enemyBullet") {
 				this.context.drawImage(imageRepository.enemyBullet, this.x, this.y);
 			}
-			
 			return false;
 		}
 	};
-	
 	/*
 	 * Resets the bullet values
 	 */
@@ -174,9 +181,207 @@ function Bullet(object) {
 		this.y = 0;
 		this.speed = 0;
 		this.alive = false;
+		this.isColliding = false;
 	};
 }
 Bullet.prototype = new Drawable();
+
+/**
+ * QuadTree object.
+ *
+ * The quadrant indexes are numbered as below:
+ *     |
+ *  1  |  0
+ * ----+----
+ *  2  |  3
+ *     |
+ */
+function QuadTree(boundBox, lvl) {
+	var maxObjects = 10;
+	this.bounds = boundBox || {
+		x: 0,
+		y: 0,
+		width: 0,
+		height: 0
+	};
+	var objects = [];
+	this.nodes = [];
+	var level = lvl || 0;
+	var maxLevels = 5;
+
+	/*
+	 * Clears the quadTree and all nodes of objects
+	 */
+	this.clear = function() {
+		objects = [];
+
+		for (var i = 0; i < this.nodes.length; i++) {
+			this.nodes[i].clear();
+		}
+
+		this.nodes = [];
+	};
+
+	/*
+	 * Get all objects in the quadTree
+	 */
+	this.getAllObjects = function(returnedObjects) {
+		for (var i = 0; i < this.nodes.length; i++) {
+			this.nodes[i].getAllObjects(returnedObjects);
+		}
+
+		for (var i = 0, len = objects.length; i < len; i++) {
+			returnedObjects.push(objects[i]);
+		}
+
+		return returnedObjects;
+	};
+
+	/*
+	 * Return all objects that the object could collide with
+	 */
+	this.findObjects = function(returnedObjects, obj) {
+		if (typeof obj === "undefined") {
+			console.log("UNDEFINED OBJECT");
+			return;
+		}
+
+		var index = this.getIndex(obj);
+		if (index != -1 && this.nodes.length) {
+			this.nodes[index].findObjects(returnedObjects, obj);
+		}
+
+		for (var i = 0, len = objects.length; i < len; i++) {
+			returnedObjects.push(objects[i]);
+		}
+
+		return returnedObjects;
+	};
+
+	/*
+	 * Insert the object into the quadTree. If the tree
+	 * excedes the capacity, it will split and add all
+	 * objects to their corresponding nodes.
+	 */
+	this.insert = function(obj) {
+		if (typeof obj === "undefined") {
+			return;
+		}
+
+		if (obj instanceof Array) {
+			for (var i = 0, len = obj.length; i < len; i++) {
+				this.insert(obj[i]);
+			}
+
+			return;
+		}
+
+		if (this.nodes.length) {
+			var index = this.getIndex(obj);
+			// Only add the object to a subnode if it can fit completely
+			// within one
+			if (index != -1) {
+				this.nodes[index].insert(obj);
+
+				return;
+			}
+		}
+
+		objects.push(obj);
+
+		// Prevent infinite splitting
+		if (objects.length > maxObjects && level < maxLevels) {
+			if (this.nodes[0] == null) {
+				this.split();
+			}
+
+			var i = 0;
+			while (i < objects.length) {
+
+				var index = this.getIndex(objects[i]);
+				if (index != -1) {
+					this.nodes[index].insert((objects.splice(i,1))[0]);
+				}
+				else {
+					i++;
+				}
+			}
+		}
+	};
+
+	/*
+	 * Determine which node the object belongs to. -1 means
+	 * object cannot completely fit within a node and is part
+	 * of the current node
+	 */
+	this.getIndex = function(obj) {
+
+		var index = -1;
+		var verticalMidpoint = this.bounds.x + this.bounds.width / 2;
+		var horizontalMidpoint = this.bounds.y + this.bounds.height / 2;
+
+		// Object can fit completely within the top quadrant
+		var topQuadrant = (obj.y < horizontalMidpoint && obj.y + obj.height < horizontalMidpoint);
+		// Object can fit completely within the bottom quandrant
+		var bottomQuadrant = (obj.y > horizontalMidpoint);
+
+		// Object can fit completely within the left quadrants
+		if (obj.x < verticalMidpoint &&
+				obj.x + obj.width < verticalMidpoint) {
+			if (topQuadrant) {
+				index = 1;
+			}
+			else if (bottomQuadrant) {
+				index = 2;
+			}
+		}
+		// Object can fix completely within the right quandrants
+		else if (obj.x > verticalMidpoint) {
+			if (topQuadrant) {
+				index = 0;
+			}
+			else if (bottomQuadrant) {
+				index = 3;
+			}
+		}
+
+		return index;
+	};
+
+	/*
+	 * Splits the node into 4 subnodes
+	 */
+	this.split = function() {
+		// Bitwise or [html5rocks]
+		var subWidth = (this.bounds.width / 2) | 0;
+		var subHeight = (this.bounds.height / 2) | 0;
+
+		this.nodes[0] = new QuadTree({
+			x: this.bounds.x + subWidth,
+			y: this.bounds.y,
+			width: subWidth,
+			height: subHeight
+		}, level+1);
+		this.nodes[1] = new QuadTree({
+			x: this.bounds.x,
+			y: this.bounds.y,
+			width: subWidth,
+			height: subHeight
+		}, level+1);
+		this.nodes[2] = new QuadTree({
+			x: this.bounds.x,
+			y: this.bounds.y + subHeight,
+			width: subWidth,
+			height: subHeight
+		}, level+1);
+		this.nodes[3] = new QuadTree({
+			x: this.bounds.x + subWidth,
+			y: this.bounds.y + subHeight,
+			width: subWidth,
+			height: subHeight
+		}, level+1);
+	};
+}
 
 
 /**
@@ -204,7 +409,17 @@ Bullet.prototype = new Drawable();
 function Pool(maxSize) {
 	var size = maxSize; // Max bullets allowed in the pool
 	var pool = [];
-	
+
+	this.getPool = function() {
+		var obj = [];
+		for (var i = 0; i < size; i++) {
+			if (pool[i].alive) {
+				obj.push(pool[i]);
+			}
+		}
+		return obj;
+	}
+
 	/*
 	 * Populates the pool array with the given object
 	 */
@@ -213,26 +428,33 @@ function Pool(maxSize) {
 			for (var i = 0; i < size; i++) {
 				// Initalize the object
 				var bullet = new Bullet("bullet");
-				bullet.init(0,0, imageRepository.bullet.width, imageRepository.bullet.height);
+				bullet.init(0,0, imageRepository.bullet.width,
+										imageRepository.bullet.height);
+				bullet.collidableWith = "enemy";
+				bullet.type = "bullet";
 				pool[i] = bullet;
 			}
 		}
 		else if (object == "enemy") {
 			for (var i = 0; i < size; i++) {
 				var enemy = new Enemy();
-				enemy.init(0,0, imageRepository.enemy.width, imageRepository.enemy.height);
+				enemy.init(0,0, imageRepository.enemy.width,
+									 imageRepository.enemy.height);
 				pool[i] = enemy;
 			}
 		}
 		else if (object == "enemyBullet") {
 			for (var i = 0; i < size; i++) {
 				var bullet = new Bullet("enemyBullet");
-				bullet.init(0,0, imageRepository.enemyBullet.width, imageRepository.enemyBullet.height);
+				bullet.init(0,0, imageRepository.enemyBullet.width,
+										imageRepository.enemyBullet.height);
+				bullet.collidableWith = "ship";
+				bullet.type = "enemyBullet";
 				pool[i] = bullet;
 			}
 		}
 	};
-	
+
 	/*
 	 * Grabs the last item in the list and initializes it and
 	 * pushes it to the front of the array.
@@ -243,7 +465,7 @@ function Pool(maxSize) {
 			pool.unshift(pool.pop());
 		}
 	};
-	
+
 	/*
 	 * Used for the ship to be able to get two bullets at once. If
 	 * only the get() function is used twice, the ship is able to
@@ -255,7 +477,7 @@ function Pool(maxSize) {
 			this.get(x2, y2, speed2);
 		}
 	};
-	
+
 	/*
 	 * Draws any in use Bullets. If a bullet goes off the screen,
 	 * clears it and pushes it to the front of the array.
@@ -287,11 +509,13 @@ function Ship() {
 	this.bulletPool.init("bullet");
 	var fireRate = 15;
 	var counter = 0;
-	
+	this.collidableWith = "enemyBullet";
+	this.type = "ship";
+
 	this.draw = function() {
 		this.context.drawImage(imageRepository.spaceship, this.x, this.y);
 	};
-	this.move = function() {	
+	this.move = function() {
 		counter++;
 		// Determine if the action is move action
 		if (KEY_STATUS.left || KEY_STATUS.right ||
@@ -299,7 +523,7 @@ function Ship() {
 			// The ship moved, so erase it's current image so it can
 			// be redrawn in it's new location
 			this.context.clearRect(this.x, this.y, this.width, this.height);
-			
+
 			// Update x and y according to the direction to move and
 			// redraw the ship. Change the else if's to if statements
 			// to have diagonal movement.
@@ -320,17 +544,18 @@ function Ship() {
 				if (this.y >= this.canvasHeight - this.height)
 					this.y = this.canvasHeight - this.height;
 			}
-			
-			// Finish by redrawing the ship
-			this.draw();
-		}
 
-		if (KEY_STATUS.space && counter >= fireRate) {
+			// Finish by redrawing the ship
+			if (!this.isColliding) {
+				this.draw();
+			}
+		}
+		if (KEY_STATUS.space && counter >= fireRate && !this.isColliding) {
 			this.fire();
 			counter = 0;
 		}
 	};
-	
+
 	/*
 	 * Fires two bullets
 	 */
@@ -349,7 +574,9 @@ function Enemy() {
 	var percentFire = .01;
 	var chance = 0;
 	this.alive = false;
-	
+	this.collidableWith = "bullet";
+	this.type = "enemy";
+
 	/*
 	 * Sets the Enemy values
 	 */
@@ -384,23 +611,31 @@ function Enemy() {
 			this.y -= 5;
 			this.speedX = -this.speed;
 		}
-		
-		this.context.drawImage(imageRepository.enemy, this.x, this.y);
-	
-		// Enemy has a chance to shoot every movement
-		chance = Math.floor(Math.random()*101);
-		if (chance/100 < percentFire) {
-			this.fire();
+
+		if (!this.isColliding) {
+			this.context.drawImage(imageRepository.enemy, this.x, this.y);
+
+			// Enemy has a chance to shoot every movement
+			chance = Math.floor(Math.random()*101);
+			if (chance/100 < percentFire) {
+				this.fire();
+			}
+
+			return false;
+		}
+		else {
+			game.playerScore += 10;
+			return true;
 		}
 	};
-	
+
 	/*
 	 * Fires a bullet
 	 */
 	this.fire = function() {
 		game.enemyBulletPool.get(this.x+this.width/2, this.y+this.height, -2.5);
-	}
-	
+	};
+
 	/*
 	 * Resets the enemy values
 	 */
@@ -411,6 +646,7 @@ function Enemy() {
 		this.speedX = 0;
 		this.speedY = 0;
 		this.alive = false;
+		this.isColliding = false;
 	};
 }
 Enemy.prototype = new Drawable();
@@ -490,6 +726,11 @@ function Game() {
 			
 			this.enemyBulletPool = new Pool(50);
 			this.enemyBulletPool.init("enemyBullet");
+			
+			// Start QuadTree
+			this.quadTree = new QuadTree({x:0,y:0,width:this.mainCanvas.width,height:this.mainCanvas.height});
+			
+			this.playerScore = 0;
 										 
 			return true;
 		} else {
@@ -512,6 +753,17 @@ function Game() {
  * object.
  */
 function animate() {
+
+	document.getElementById('score').innerHTML = game.playerScore;
+	
+	// Insert objects into quadtree
+	game.quadTree.clear();
+	game.quadTree.insert(game.ship);
+	game.quadTree.insert(game.ship.bulletPool.getPool());
+	game.quadTree.insert(game.enemyPool.getPool());
+	game.quadTree.insert(game.enemyBulletPool.getPool());
+	detectCollision();
+	// Animate game objects
 	requestAnimFrame( animate );
 	game.background.draw();
 	game.ship.move();
@@ -520,6 +772,27 @@ function animate() {
 	game.enemyBulletPool.animate();
 }
 
+function detectCollision() {
+	var objects = [];
+	game.quadTree.getAllObjects(objects);
+
+	for (var x = 0, len = objects.length; x < len; x++) {
+		game.quadTree.findObjects(obj = [], objects[x]);
+
+		for (y = 0, length = obj.length; y < length; y++) {
+
+			// DETECT COLLISION ALGORITHM
+			if (objects[x].collidableWith === obj[y].type &&
+				(objects[x].x < obj[y].x + obj[y].width &&
+			     objects[x].x + objects[x].width > obj[y].x &&
+				 objects[x].y < obj[y].y + obj[y].height &&
+				 objects[x].y + objects[x].height > obj[y].y)) {
+				objects[x].isColliding = true;
+				obj[y].isColliding = true;
+			}
+		}
+	}
+};
 
 // The keycodes that will be mapped when a user presses a button.
 // Original code by Doug McInnes
