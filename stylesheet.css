@@ -18,14 +18,6 @@ canvas {
 #ship {
 	z-index: 0;
 }
-.score {
-	position: absolute;
-	top: 5px;
-	left: 480px;
-	color: #FF7F00;
-	font-family: Helvetica, sans-serif;
-	cursor: default;
-}
 .game-over {
 	position: absolute;
 	top: 100px;

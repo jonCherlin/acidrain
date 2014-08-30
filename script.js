@@ -38,12 +38,11 @@ var imageRepository = new function() {
 	// Define images
 	this.background = new Image();
 	this.spacecharacter = new Image();
-	this.bullet = new Image();
 	this.enemy = new Image();
 	this.enemyBullet = new Image();
 
 	// Ensure all images have loaded before starting the game
-	var numImages = 5;
+	var numImages = 4;
 	var numLoaded = 0;
 	function imageLoaded() {
 		numLoaded++;
@@ -57,9 +56,6 @@ var imageRepository = new function() {
 	this.spacecharacter.onload = function() {
 		imageLoaded();
 	}
-	this.bullet.onload = function() {
-		imageLoaded();
-	}
 	this.enemy.onload = function() {
 		imageLoaded();
 	}
@@ -70,7 +66,6 @@ var imageRepository = new function() {
 	// Set images src
 	this.background.src = "images/bg.png";
 	this.spacecharacter.src = "images/character.png";
-	this.bullet.src = "images/bullet.png";
 	this.enemy.src = "images/enemy.png";
 	this.enemyBullet.src = "images/bullet_enemy.png";
 }
@@ -166,17 +161,11 @@ function Bullet(object) {
 		if (this.isColliding) {
 			return true;
 		}
-		else if (self === "bullet" && this.y <= 0 - this.height) {
-			return true;
-		}
 		else if (self === "enemyBullet" && this.y >= this.canvasHeight) {
 			return true;
 		}
 		else {
-			if (self === "bullet") {
-				this.context.drawImage(imageRepository.bullet, this.x, this.y);
-			}
-			else if (self === "enemyBullet") {
+			if (self === "enemyBullet") {
 				this.context.drawImage(imageRepository.enemyBullet, this.x, this.y);
 			}
 
@@ -436,18 +425,7 @@ function Pool(maxSize) {
 	 * Populates the pool array with the given object
 	 */
 	this.init = function(object) {
-		if (object == "bullet") {
-			for (var i = 0; i < size; i++) {
-				// Initalize the object
-				var bullet = new Bullet("bullet");
-				bullet.init(0,0, imageRepository.bullet.width,
-										imageRepository.bullet.height);
-				bullet.collidableWith = "enemy";
-				bullet.type = "bullet";
-				pool[i] = bullet;
-			}
-		}
-		else if (object == "enemy") {
+		if (object == "enemy") {
 			for (var i = 0; i < size; i++) {
 				var enemy = new Enemy();
 				enemy.init(0,0, imageRepository.enemy.width,
@@ -516,8 +494,7 @@ function Pool(maxSize) {
  * around the screen.
  */
 function Character() {
-	this.speed = 7;
-	this.bulletPool = new Pool(30);
+	this.speed = 8;
 	var fireRate = 15;
 	var counter = 0;
 	this.collidableWith = "enemyBullet";
@@ -531,7 +508,6 @@ function Character() {
 		this.height = height;
 		this.alive = true;
 		this.isColliding = false;
-		this.bulletPool.init("bullet");
 	}
 
 	this.draw = function() {
@@ -557,7 +533,8 @@ function Character() {
 				this.x += this.speed
 				if (this.x >= this.canvasWidth - this.width)
 					this.x = this.canvasWidth - this.width;
-			} else if (KEY_STATUS.up) {
+			} 
+			/*else if (KEY_STATUS.up) {
 				this.y -= this.speed
 				if (this.y <= this.canvasHeight/4*3)
 					this.y = this.canvasHeight/4*3;
@@ -565,7 +542,7 @@ function Character() {
 				this.y += this.speed
 				if (this.y >= this.canvasHeight - this.height)
 					this.y = this.canvasHeight - this.height;
-			}
+			}*/
 		}
 
 		// Redraw the character
@@ -575,22 +552,9 @@ function Character() {
 		else {
 			this.alive = false;
 			game.gameOver();
-		}
-
-		if (KEY_STATUS.space && counter >= fireRate && !this.isColliding) {
-			this.fire();
-			counter = 0;
-		}		
+		}	
 	};
 
-	/*
-	 * Fires two bullets
-	 */
-	this.fire = function() {
-		this.bulletPool.getTwo(this.x+6, this.y, 3,
-		                       this.x+33, this.y, 3);
-		game.laser.get();
-	};
 }
 Character.prototype = new Drawable();
 
@@ -652,7 +616,6 @@ function Enemy() {
 			return false;
 		}
 		else {
-			game.playerScore += 10;
 			game.explosion.get();
 			return true;
 		}
@@ -748,8 +711,6 @@ function Game() {
 			// Start QuadTree
 			this.quadTree = new QuadTree({x:0,y:0,width:this.mainCanvas.width,height:this.mainCanvas.height});
 
-			this.playerScore = 0;
-
 			// Audio files
 			this.laser = new SoundPool(10);
 			this.laser.init("laser");
@@ -814,8 +775,6 @@ function Game() {
 		this.enemyPool.init("enemy");
 		this.spawnWave();
 		this.enemyBulletPool.init("enemyBullet");
-
-		this.playerScore = 0;
 
 		this.backgroundAudio.currentTime = 0;
 		//this.backgroundAudio.play();
@@ -909,12 +868,10 @@ function SoundPool(maxSize) {
  * object.
  */
 function animate() {
-	document.getElementById('score').innerHTML = game.playerScore;
 
 	// Insert objects into quadtree
 	game.quadTree.clear();
 	game.quadTree.insert(game.character);
-	game.quadTree.insert(game.character.bulletPool.getPool());
 	game.quadTree.insert(game.enemyPool.getPool());
 	game.quadTree.insert(game.enemyBulletPool.getPool());
 
@@ -931,7 +888,6 @@ function animate() {
 
 		game.background.draw();
 		game.character.move();
-		game.character.bulletPool.animate();
 		game.enemyPool.animate();
 		game.enemyBulletPool.animate();
 	}
