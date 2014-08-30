@@ -21,6 +21,7 @@
 /**
  * Initialize the Game and start it.
  */
+var gameover = false;
 var game = new Game();
 
 function init() {
@@ -579,7 +580,7 @@ function Character() {
 		if (KEY_STATUS.space && counter >= fireRate && !this.isColliding) {
 			this.fire();
 			counter = 0;
-		}
+		}		
 	};
 
 	/*
@@ -685,6 +686,7 @@ Enemy.prototype = new Drawable();
  * the game.
  */
 function Game() {
+
 	/*
 	 * Gets canvas information and context and sets up all game
 	 * objects.
@@ -795,6 +797,7 @@ function Game() {
 
 	// Restart the game
 	this.restart = function() {
+		gameover = false;
 		this.gameOverAudio.pause();
 
 		document.getElementById('game-over').style.display = "none";
@@ -822,12 +825,26 @@ function Game() {
 
 	// Game over
 	this.gameOver = function() {
+		gameover = true;
 		this.backgroundAudio.pause();
 		this.gameOverAudio.currentTime = 0;
 		//this.gameOverAudio.play();
 		document.getElementById('game-over').style.display = "block";
+		console.log('gameover');
 	};
 }
+
+$(document).keydown(function(key) {
+			switch(parseInt(key.which)) {
+				case 13:
+					if(gameover) {
+						game.restart();	
+					}
+					break;
+				defaultkey: "value"
+					break;
+			}
+		});
 
 /**
  * Ensure the game sound has loaded before starting the game
@@ -948,9 +965,12 @@ function detectCollision() {
 KEY_CODES = {
   32: 'space',
   37: 'left',
+  65: 'left',
   38: 'up',
   39: 'right',
+  68: 'right',
   40: 'down',
+  13: 'enter',
 }
 
 // Creates the array to hold the KEY_CODES and sets all their values
