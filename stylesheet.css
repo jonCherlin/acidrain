@@ -1,52 +1,56 @@
-/* Add your CSS below! */
 body {
-    /*width:390px;
-    height:225px;*/
-    width: 1024px;
-    height: 728px;
-    margin: 0 auto;
-    position:relative;
-    background: rgb(75, 155, 180);
+	background: url('images/city_bg.png') 0 0 no-repeat;
+	width: 1024px;
+	height: 728px;
 }
-#content_wrap {
-  width: 100%;
-  height: 100%;
-  background: #fff;
+canvas {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	background: transparent;
 }
-.rain {
-    width:10px;
-    height:10px;
-    border-radius:10px;
-    background:blue;
-    position:absolute;
-    top:-20px;
-   
+#background {
+	z-index: -2;
 }
-.character {
-    position:absolute;
-    bottom:100px;
-    left:0px;
-    width:64px;
-    height:64px;
+#main {
+	z-index: -1;
 }
-.play {
-   text-align:center;
-   /*margin-top:112.5px;*/
-   top: 364px;
-   position: absolute;
-   width: 100%;
-   background:green;
-   color:white;
-   font-weight:bold;
-   font-size:20px;
-   letter-spacing:3px;
-   cursor:pointer;
+#ship {
+	z-index: 0;
 }
-
-.ground {
-  background: yellow;
-  width: 100%;
-  height: 100px;
-  position: absolute;
-  bottom: 0px;
+.score {
+	position: absolute;
+	top: 5px;
+	left: 480px;
+	color: #FF7F00;
+	font-family: Helvetica, sans-serif;
+	cursor: default;
+}
+.game-over {
+	position: absolute;
+	top: 100px;
+	left: 210px;
+	color: #FF7F00;
+	font-family: Helvetica, sans-serif;
+	font-size: 30px;
+	cursor: default;
+	display: none;
+}
+.game-over span {
+	font-size: 20px;
+	cursor: pointer;
+	position: relative;
+	left: 50px;
+}
+.game-over span:hover {
+	color: #FFD700;
+}
+.loading {
+	position: absolute;
+	top: 100px;
+	left: 210px;
+	color: #FF7F00;
+	font-family: Helvetica, sans-serif;
+	font-size: 30px;
+	cursor: default;
 }
