@@ -515,7 +515,7 @@ function Pool(maxSize) {
  * around the screen.
  */
 function Character() {
-	this.speed = 3;
+	this.speed = 7;
 	this.bulletPool = new Pool(30);
 	var fireRate = 15;
 	var counter = 0;
@@ -598,10 +598,10 @@ Character.prototype = new Drawable();
  * Create the Enemy character object.
  */
 function Enemy() {
-	var percentFire = .01;
+	var percentFire = .02;
 	var chance = 0;
 	this.alive = false;
-	this.collidableWith = "bullet";
+	//this.collidableWith = "bullet";
 	this.type = "enemy";
 
 	/*
@@ -614,16 +614,16 @@ function Enemy() {
 		this.speedX = 0;
 		this.speedY = speed;
 		this.alive = true;
-		this.leftEdge = this.x - 90;
-		this.rightEdge = this.x + 90;
-		this.bottomEdge = this.y + 140;
+		this.leftEdge = this.x - 40;
+		this.rightEdge = this.x + 40;
+		this.bottomEdge = 0;
 	};
 
 	/*
 	 * Move the enemy
 	 */
 	this.draw = function() {
-		this.context.clearRect(this.x-1, this.y, this.width+1, this.height);
+		//this.context.clearRect(this.x-1, this.y, this.width+1, this.height);
 		this.x += this.speedX;
 		this.y += this.speedY;
 		if (this.x <= this.leftEdge) {
@@ -640,7 +640,7 @@ function Enemy() {
 		}
 
 		if (!this.isColliding) {
-			this.context.drawImage(imageRepository.enemy, this.x, this.y);
+			//this.context.drawImage(imageRepository.enemy, this.x, this.y);
 
 			// Enemy has a chance to shoot every movement
 			chance = Math.floor(Math.random()*101);
@@ -661,7 +661,7 @@ function Enemy() {
 	 * Fires a bullet
 	 */
 	this.fire = function() {
-		game.enemyBulletPool.get(this.x+this.width/2, this.y+this.height, -2.5);
+		game.enemyBulletPool.get(this.x+this.width/2, this.y, -10);
 	};
 
 	/*
@@ -736,7 +736,7 @@ function Game() {
 			               imageRepository.spacecharacter.width, imageRepository.spacecharacter.height);
 
 			// Initialize the enemy pool object
-			this.enemyPool = new Pool(30);
+			this.enemyPool = new Pool(9);
 			this.enemyPool.init("enemy");
 			this.spawnWave();
 
@@ -772,15 +772,15 @@ function Game() {
 	// Spawn a new wave of enemies
 	this.spawnWave = function() {
 		var height = imageRepository.enemy.height;
-		var width = imageRepository.enemy.width;
-		var x = 100;
+		var width = 40;
+		var x = 0;
 		var y = -height;
 		var spacer = y * 1.5;
 		for (var i = 1; i <= 18; i++) {
 			this.enemyPool.get(x,y,2);
-			x += width + 25;
-			if (i % 6 == 0) {
-				x = 100;
+			x += width + 80;
+			if (i % 9 == 0) {
+				x = 0;
 				y += spacer
 			}
 		}
