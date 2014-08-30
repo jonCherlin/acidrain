@@ -42,7 +42,7 @@ var imageRepository = new function() {
 	this.enemyBullet = new Image();
 
 	// Ensure all images have loaded before starting the game
-	var numImages = 4;
+	var numImages = 3;
 	var numLoaded = 0;
 	function imageLoaded() {
 		numLoaded++;
@@ -66,7 +66,6 @@ var imageRepository = new function() {
 	// Set images src
 	this.background.src = "images/bg.png";
 	this.spacecharacter.src = "images/character.png";
-	this.enemy.src = "images/enemy.png";
 	this.enemyBullet.src = "images/bullet_enemy.png";
 }
 
@@ -161,7 +160,7 @@ function Bullet(object) {
 		if (this.isColliding) {
 			return true;
 		}
-		else if (self === "enemyBullet" && this.y >= this.canvasHeight) {
+		else if (self === "enemyBullet" && this.y >= (this.canvasHeight - 100)) {
 			return true;
 		}
 		else {
@@ -696,7 +695,7 @@ function Game() {
 			this.character = new Character();
 			// Set the character to start near the bottom middle of the canvas
 			this.characterStartX = this.characterCanvas.width/2 - imageRepository.spacecharacter.width;
-			this.characterStartY = this.characterCanvas.height/4*3 + imageRepository.spacecharacter.height*2;
+			this.characterStartY = this.characterCanvas.height - imageRepository.spacecharacter.height - 100;
 			this.character.init(this.characterStartX, this.characterStartY,
 			               imageRepository.spacecharacter.width, imageRepository.spacecharacter.height);
 
@@ -789,7 +788,6 @@ function Game() {
 		this.gameOverAudio.currentTime = 0;
 		//this.gameOverAudio.play();
 		document.getElementById('game-over').style.display = "block";
-		console.log('gameover');
 	};
 }
 

@@ -1,7 +1,8 @@
 body {
-	background: url('images/city_bg.png') 0 0 no-repeat;
 	width: 1024px;
 	height: 728px;
+	position: relative;
+	margin: 0 auto;
 }
 canvas {
 	position: absolute;
@@ -9,8 +10,17 @@ canvas {
 	left: 0px;
 	background: transparent;
 }
+#ground {
+	background: gray;
+	width: 100%;
+	height: 100px;
+	position: absolute;
+	bottom: 0px;
+	
+}
 #background {
 	z-index: -2;
+	background: url('images/city_bg.png') 0 0 no-repeat;
 }
 #main {
 	z-index: -1;
@@ -20,19 +30,22 @@ canvas {
 }
 .game-over {
 	position: absolute;
-	top: 100px;
-	left: 210px;
-	color: #FF7F00;
+	top: 200px;
+	color: red;
 	font-family: Helvetica, sans-serif;
 	font-size: 30px;
 	cursor: default;
 	display: none;
+	width: 100%;
+	text-align: center;
+	background: black;
 }
 .game-over span {
 	font-size: 20px;
 	cursor: pointer;
 	position: relative;
-	left: 50px;
+	display: block;
+	color: rgb(13, 185, 13);
 }
 .game-over span:hover {
 	color: #FFD700;
