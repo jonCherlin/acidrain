@@ -1,30 +1,36 @@
 /***************
- * PART THREE - Create the enemy ships
+ * PART FIVE - Finishing touches
  ***************/
 
 /* NOTES TO REMEMBER
- * 1. Remeber to think ahead when developing a game to what future changes will do and account for them.
- */
- 
-/* RESOURCES
- * 1. http://gamedev.tutsplus.com/tutorials/implementation/quick-tip-the-oop-principle-of-coupling/
+ * Could add
+ * - hitboxes to all objects to make collision better
+ * - levels
+ * - bosses
+ * - explosions / particles
+ * - parallax background
+ * - vectors for movement
+ * - lirbraries! http://www.createjs.com/#!/CreateJS
  */
 
-	
+/* RESOURCES
+ * http://www.w3schools.com/html5/html5_ref_av_dom.asp
+ * http://www.superflashbros.net/as3sfxr/
+ */
+
 /**
  * Initialize the Game and start it.
  */
 var game = new Game();
 
 function init() {
-	if(game.init())
-		game.start();
+	game.init();
 }
 
 
 /**
  * Define an object to hold all our images for the game so images
- * are only ever created once. This type of object is known as a 
+ * are only ever created once. This type of object is known as a
  * singleton.
  */
 var imageRepository = new function() {
@@ -34,7 +40,7 @@ var imageRepository = new function() {
 	this.bullet = new Image();
 	this.enemy = new Image();
 	this.enemyBullet = new Image();
-	
+
 	// Ensure all images have loaded before starting the game
 	var numImages = 5;
 	var numLoaded = 0;
@@ -59,7 +65,7 @@ var imageRepository = new function() {
 	this.enemyBullet.onload = function() {
 		imageLoaded();
 	}
-	
+
 	// Set images src
 	this.background.src = "images/bg.png";
 	this.spaceship.src = "images/ship.png";
@@ -109,13 +115,14 @@ function Drawable() {
  */
 function Background() {
 	this.speed = 1; // Redefine speed of the background for panning
-	
+
 	// Implement abstract function
 	this.draw = function() {
 		// Pan background
 		this.y += this.speed;
+		//this.context.clearRect(0,0, this.canvasWidth, this.canvasHeight);
 		this.context.drawImage(imageRepository.background, this.x, this.y);
-		
+
 		// Draw another image at the top edge of the first image
 		this.context.drawImage(imageRepository.background, this.x, this.y - this.canvasHeight);
 
@@ -132,7 +139,7 @@ Background.prototype = new Drawable();
  * Creates the Bullet object which the ship fires. The bullets are
  * drawn on the "main" canvas.
  */
-function Bullet(object) {	
+function Bullet(object) {
 	this.alive = false; // Is true if the bullet is currently in use
 	var self = object;
 	/*
@@ -146,14 +153,15 @@ function Bullet(object) {
 	};
 
 	/*
-	 * Uses a "dirty rectangle" to erase the bullet and moves it.
-	 * Returns true if the bullet moved off the screen, indicating that
+	 * Uses a "drity rectangle" to erase the bullet and moves it.
+	 * Returns true if the bullet moved of the screen, indicating that
 	 * the bullet is ready to be cleared by the pool, otherwise draws
 	 * the bullet.
 	 */
 	this.draw = function() {
 		this.context.clearRect(this.x-1, this.y-1, this.width+2, this.height+2);
 		this.y -= this.speed;
+
 		if (this.isColliding) {
 			return true;
 		}
@@ -170,9 +178,11 @@ function Bullet(object) {
 			else if (self === "enemyBullet") {
 				this.context.drawImage(imageRepository.enemyBullet, this.x, this.y);
 			}
+
 			return false;
 		}
 	};
+
 	/*
 	 * Resets the bullet values
 	 */
@@ -185,6 +195,7 @@ function Bullet(object) {
 	};
 }
 Bullet.prototype = new Drawable();
+
 
 /**
  * QuadTree object.
@@ -386,24 +397,24 @@ function QuadTree(boundBox, lvl) {
 
 /**
  * Custom Pool object. Holds Bullet objects to be managed to prevent
- * garbage collection. 
+ * garbage collection.
  * The pool works as follows:
- * - When the pool is initialized, it popoulates an array with 
+ * - When the pool is initialized, it popoulates an array with
  *   Bullet objects.
  * - When the pool needs to create a new object for use, it looks at
  *   the last item in the array and checks to see if it is currently
- *   in use or not. If it is in use, the pool is full. If it is 
- *   not in use, the pool "spawns" the last item in the array and 
+ *   in use or not. If it is in use, the pool is full. If it is
+ *   not in use, the pool "spawns" the last item in the array and
  *   then pops it from the end and pushed it back onto the front of
- *   the array. This makes the pool have free objects on the back 
+ *   the array. This makes the pool have free objects on the back
  *   and used objects in the front.
- * - When the pool animates its objects, it checks to see if the 
- *   object is in use (no need to draw unused objects) and if it is, 
- *   draws it. If the draw() function returns true, the object is 
- *   ready to be cleaned so it "clears" the object and uses the 
- *   array function splice() to remove the item from the array and 
+ * - When the pool animates its objects, it checks to see if the
+ *   object is in use (no need to draw unused objects) and if it is,
+ *   draws it. If the draw() function returns true, the object is
+ *   ready to be cleaned so it "clears" the object and uses the
+ *   array function splice() to remove the item from the array and
  *   pushes it to the back.
- * Doing this makes creating/destroying objects in the pool 
+ * Doing this makes creating/destroying objects in the pool
  * constant.
  */
 function Pool(maxSize) {
@@ -506,11 +517,21 @@ function Pool(maxSize) {
 function Ship() {
 	this.speed = 3;
 	this.bulletPool = new Pool(30);
-	this.bulletPool.init("bullet");
 	var fireRate = 15;
 	var counter = 0;
 	this.collidableWith = "enemyBullet";
 	this.type = "ship";
+
+	this.init = function(x, y, width, height) {
+		// Defualt variables
+		this.x = x;
+		this.y = y;
+		this.width = width;
+		this.height = height;
+		this.alive = true;
+		this.isColliding = false;
+		this.bulletPool.init("bullet");
+	}
 
 	this.draw = function() {
 		this.context.drawImage(imageRepository.spaceship, this.x, this.y);
@@ -544,12 +565,17 @@ function Ship() {
 				if (this.y >= this.canvasHeight - this.height)
 					this.y = this.canvasHeight - this.height;
 			}
-
-			// Finish by redrawing the ship
-			if (!this.isColliding) {
-				this.draw();
-			}
 		}
+
+		// Redraw the ship
+		if (!this.isColliding) {
+			this.draw();
+		}
+		else {
+			this.alive = false;
+			game.gameOver();
+		}
+
 		if (KEY_STATUS.space && counter >= fireRate && !this.isColliding) {
 			this.fire();
 			counter = 0;
@@ -562,13 +588,14 @@ function Ship() {
 	this.fire = function() {
 		this.bulletPool.getTwo(this.x+6, this.y, 3,
 		                       this.x+33, this.y, 3);
+		game.laser.get();
 	};
 }
 Ship.prototype = new Drawable();
 
 
 /**
- * Create the Enemy ship object. 
+ * Create the Enemy ship object.
  */
 function Enemy() {
 	var percentFire = .01;
@@ -625,6 +652,7 @@ function Enemy() {
 		}
 		else {
 			game.playerScore += 10;
+			game.explosion.get();
 			return true;
 		}
 	};
@@ -659,7 +687,7 @@ Enemy.prototype = new Drawable();
 function Game() {
 	/*
 	 * Gets canvas information and context and sets up all game
-	 * objects. 
+	 * objects.
 	 * Returns true if the canvas is supported and false if it
 	 * is not. This is to stop the animation script from constantly
 	 * running on browsers that do not support the canvas.
@@ -669,79 +697,190 @@ function Game() {
 		this.bgCanvas = document.getElementById('background');
 		this.shipCanvas = document.getElementById('ship');
 		this.mainCanvas = document.getElementById('main');
-		
+
 		// Test to see if canvas is supported. Only need to
 		// check one canvas
 		if (this.bgCanvas.getContext) {
 			this.bgContext = this.bgCanvas.getContext('2d');
 			this.shipContext = this.shipCanvas.getContext('2d');
 			this.mainContext = this.mainCanvas.getContext('2d');
-		
+
 			// Initialize objects to contain their context and canvas
 			// information
 			Background.prototype.context = this.bgContext;
 			Background.prototype.canvasWidth = this.bgCanvas.width;
 			Background.prototype.canvasHeight = this.bgCanvas.height;
-			
+
 			Ship.prototype.context = this.shipContext;
 			Ship.prototype.canvasWidth = this.shipCanvas.width;
 			Ship.prototype.canvasHeight = this.shipCanvas.height;
-			
+
 			Bullet.prototype.context = this.mainContext;
 			Bullet.prototype.canvasWidth = this.mainCanvas.width;
 			Bullet.prototype.canvasHeight = this.mainCanvas.height;
-			
+
 			Enemy.prototype.context = this.mainContext;
 			Enemy.prototype.canvasWidth = this.mainCanvas.width;
 			Enemy.prototype.canvasHeight = this.mainCanvas.height;
-			
+
 			// Initialize the background object
 			this.background = new Background();
 			this.background.init(0,0); // Set draw point to 0,0
-			
+
 			// Initialize the ship object
 			this.ship = new Ship();
 			// Set the ship to start near the bottom middle of the canvas
-			var shipStartX = this.shipCanvas.width/2 - imageRepository.spaceship.width;
-			var shipStartY = this.shipCanvas.height/4*3 + imageRepository.spaceship.height*2;
-			this.ship.init(shipStartX, shipStartY, imageRepository.spaceship.width,
-			               imageRepository.spaceship.height);
-										 
+			this.shipStartX = this.shipCanvas.width/2 - imageRepository.spaceship.width;
+			this.shipStartY = this.shipCanvas.height/4*3 + imageRepository.spaceship.height*2;
+			this.ship.init(this.shipStartX, this.shipStartY,
+			               imageRepository.spaceship.width, imageRepository.spaceship.height);
+
 			// Initialize the enemy pool object
 			this.enemyPool = new Pool(30);
 			this.enemyPool.init("enemy");
-			var height = imageRepository.enemy.height;
-			var width = imageRepository.enemy.width;
-			var x = 100;
-			var y = -height;
-			var spacer = y * 1.5;
-			for (var i = 1; i <= 18; i++) {
-				this.enemyPool.get(x,y,2);
-				x += width + 25;
-				if (i % 6 == 0) {
-					x = 100;
-					y += spacer
-				}
-			}
-			
+			this.spawnWave();
+
 			this.enemyBulletPool = new Pool(50);
 			this.enemyBulletPool.init("enemyBullet");
-			
+
 			// Start QuadTree
 			this.quadTree = new QuadTree({x:0,y:0,width:this.mainCanvas.width,height:this.mainCanvas.height});
-			
+
 			this.playerScore = 0;
-										 
-			return true;
-		} else {
-			return false;
+
+			// Audio files
+			this.laser = new SoundPool(10);
+			this.laser.init("laser");
+
+			this.explosion = new SoundPool(20);
+			this.explosion.init("explosion");
+
+			this.backgroundAudio = new Audio("sounds/kick_shock.wav");
+			this.backgroundAudio.loop = true;
+			this.backgroundAudio.volume = .25;
+			this.backgroundAudio.load();
+
+			this.gameOverAudio = new Audio("sounds/game_over.wav");
+			this.gameOverAudio.loop = true;
+			this.gameOverAudio.volume = .25;
+			this.gameOverAudio.load();
+
+			this.checkAudio = window.setInterval(function(){checkReadyState()},1000);
 		}
 	};
-	
+
+	// Spawn a new wave of enemies
+	this.spawnWave = function() {
+		var height = imageRepository.enemy.height;
+		var width = imageRepository.enemy.width;
+		var x = 100;
+		var y = -height;
+		var spacer = y * 1.5;
+		for (var i = 1; i <= 18; i++) {
+			this.enemyPool.get(x,y,2);
+			x += width + 25;
+			if (i % 6 == 0) {
+				x = 100;
+				y += spacer
+			}
+		}
+	}
+
 	// Start the animation loop
 	this.start = function() {
 		this.ship.draw();
+		this.backgroundAudio.play();
 		animate();
+	};
+
+	// Restart the game
+	this.restart = function() {
+		this.gameOverAudio.pause();
+
+		document.getElementById('game-over').style.display = "none";
+		this.bgContext.clearRect(0, 0, this.bgCanvas.width, this.bgCanvas.height);
+		this.shipContext.clearRect(0, 0, this.shipCanvas.width, this.shipCanvas.height);
+		this.mainContext.clearRect(0, 0, this.mainCanvas.width, this.mainCanvas.height);
+
+		this.quadTree.clear();
+
+		this.background.init(0,0);
+		this.ship.init(this.shipStartX, this.shipStartY,
+		               imageRepository.spaceship.width, imageRepository.spaceship.height);
+
+		this.enemyPool.init("enemy");
+		this.spawnWave();
+		this.enemyBulletPool.init("enemyBullet");
+
+		this.playerScore = 0;
+
+		this.backgroundAudio.currentTime = 0;
+		this.backgroundAudio.play();
+
+		this.start();
+	};
+
+	// Game over
+	this.gameOver = function() {
+		this.backgroundAudio.pause();
+		this.gameOverAudio.currentTime = 0;
+		this.gameOverAudio.play();
+		document.getElementById('game-over').style.display = "block";
+	};
+}
+
+/**
+ * Ensure the game sound has loaded before starting the game
+ */
+function checkReadyState() {
+	if (game.gameOverAudio.readyState === 4 && game.backgroundAudio.readyState === 4) {
+		window.clearInterval(game.checkAudio);
+		document.getElementById('loading').style.display = "none";
+		game.start();
+	}
+}
+
+
+/**
+ * A sound pool to use for the sound effects
+ */
+function SoundPool(maxSize) {
+	var size = maxSize; // Max bullets allowed in the pool
+	var pool = [];
+	this.pool = pool;
+	var currSound = 0;
+
+	/*
+	 * Populates the pool array with the given object
+	 */
+	this.init = function(object) {
+		if (object == "laser") {
+			for (var i = 0; i < size; i++) {
+				// Initalize the object
+				laser = new Audio("sounds/laser.wav");
+				laser.volume = .12;
+				laser.load();
+				pool[i] = laser;
+			}
+		}
+		else if (object == "explosion") {
+			for (var i = 0; i < size; i++) {
+				var explosion = new Audio("sounds/explosion.wav");
+				explosion.volume = .1;
+				explosion.load();
+				pool[i] = explosion;
+			}
+		}
+	};
+
+	/*
+	 * Plays a sound
+	 */
+	this.get = function() {
+		if(pool[currSound].currentTime == 0 || pool[currSound].ended) {
+			pool[currSound].play();
+		}
+		currSound = (currSound + 1) % size;
 	};
 }
 
@@ -753,23 +892,32 @@ function Game() {
  * object.
  */
 function animate() {
-
 	document.getElementById('score').innerHTML = game.playerScore;
-	
+
 	// Insert objects into quadtree
 	game.quadTree.clear();
 	game.quadTree.insert(game.ship);
 	game.quadTree.insert(game.ship.bulletPool.getPool());
 	game.quadTree.insert(game.enemyPool.getPool());
 	game.quadTree.insert(game.enemyBulletPool.getPool());
+
 	detectCollision();
+
+	// No more enemies
+	if (game.enemyPool.getPool().length === 0) {
+		game.spawnWave();
+	}
+
 	// Animate game objects
-	requestAnimFrame( animate );
-	game.background.draw();
-	game.ship.move();
-	game.ship.bulletPool.animate();
-	game.enemyPool.animate();
-	game.enemyBulletPool.animate();
+	if (game.ship.alive) {
+		requestAnimFrame( animate );
+
+		game.background.draw();
+		game.ship.move();
+		game.ship.bulletPool.animate();
+		game.enemyPool.animate();
+		game.enemyBulletPool.animate();
+	}
 }
 
 function detectCollision() {
@@ -793,6 +941,7 @@ function detectCollision() {
 		}
 	}
 };
+
 
 // The keycodes that will be mapped when a user presses a button.
 // Original code by Doug McInnes
@@ -842,17 +991,17 @@ document.onkeyup = function(e) {
 }
 
 
-/**	
+/**
  * requestAnim shim layer by Paul Irish
- * Finds the first API that works to optimize the animation loop, 
+ * Finds the first API that works to optimize the animation loop,
  * otherwise defaults to setTimeout().
  */
 window.requestAnimFrame = (function(){
-	return  window.requestAnimationFrame       || 
-			window.webkitRequestAnimationFrame || 
-			window.mozRequestAnimationFrame    || 
-			window.oRequestAnimationFrame      || 
-			window.msRequestAnimationFrame     || 
+	return  window.requestAnimationFrame       ||
+			window.webkitRequestAnimationFrame ||
+			window.mozRequestAnimationFrame    ||
+			window.oRequestAnimationFrame      ||
+			window.msRequestAnimationFrame     ||
 			function(/* function */ callback, /* DOMElement */ element){
 				window.setTimeout(callback, 1000 / 60);
 			};
