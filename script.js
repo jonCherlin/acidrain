@@ -37,12 +37,12 @@ function init() {
 var imageRepository = new function() {
 	// Define images
 	this.background = new Image();
-	this.spacecharacter = new Image();
+	this.character = new Image();
 	this.enemy = new Image();
 	this.enemyBullet = new Image();
 
 	// Ensure all images have loaded before starting the game
-	var numImages = 3;
+	var numImages = 4;
 	var numLoaded = 0;
 	function imageLoaded() {
 		numLoaded++;
@@ -53,7 +53,7 @@ var imageRepository = new function() {
 	this.background.onload = function() {
 		imageLoaded();
 	}
-	this.spacecharacter.onload = function() {
+	this.character.onload = function() {
 		imageLoaded();
 	}
 	this.enemy.onload = function() {
@@ -65,7 +65,8 @@ var imageRepository = new function() {
 
 	// Set images src
 	this.background.src = "images/bg.png";
-	this.spacecharacter.src = "images/character.png";
+	this.character.src = "images/character.png";
+	this.enemy.src = "images/enemy.png";
 	this.enemyBullet.src = "images/bullet_enemy.png";
 }
 
@@ -510,7 +511,7 @@ function Character() {
 	}
 
 	this.draw = function() {
-		this.context.drawImage(imageRepository.spacecharacter, this.x, this.y);
+		this.context.drawImage(imageRepository.character, this.x, this.y);
 	};
 	this.move = function() {
 		counter++;
@@ -587,7 +588,7 @@ function Enemy() {
 	 * Move the enemy
 	 */
 	this.draw = function() {
-		//this.context.clearRect(this.x-1, this.y, this.width+1, this.height);
+		this.context.clearRect(this.x-1, this.y, this.width+1, this.height);
 		this.x += this.speedX;
 		this.y += this.speedY;
 		if (this.x <= this.leftEdge) {
@@ -604,7 +605,7 @@ function Enemy() {
 		}
 
 		if (!this.isColliding) {
-			//this.context.drawImage(imageRepository.enemy, this.x, this.y);
+			this.context.drawImage(imageRepository.enemy, this.x, this.y);
 
 			// Enemy has a chance to shoot every movement
 			chance = Math.floor(Math.random()*101);
@@ -694,10 +695,10 @@ function Game() {
 			// Initialize the character object
 			this.character = new Character();
 			// Set the character to start near the bottom middle of the canvas
-			this.characterStartX = this.characterCanvas.width/2 - imageRepository.spacecharacter.width;
-			this.characterStartY = this.characterCanvas.height - imageRepository.spacecharacter.height - 100;
+			this.characterStartX = this.characterCanvas.width/2 - imageRepository.character.width;
+			this.characterStartY = this.characterCanvas.height - imageRepository.character.height - 100;
 			this.character.init(this.characterStartX, this.characterStartY,
-			               imageRepository.spacecharacter.width, imageRepository.spacecharacter.height);
+			               imageRepository.character.width, imageRepository.character.height);
 
 			// Initialize the enemy pool object
 			this.enemyPool = new Pool(9);
@@ -769,7 +770,7 @@ function Game() {
 
 		//this.background.init(0,0);
 		this.character.init(this.characterStartX, this.characterStartY,
-		               imageRepository.spacecharacter.width, imageRepository.spacecharacter.height);
+		               imageRepository.character.width, imageRepository.character.height);
 
 		this.enemyPool.init("enemy");
 		this.spawnWave();
