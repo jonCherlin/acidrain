@@ -625,7 +625,7 @@ function Enemy() {
 	 * Fires a bullet
 	 */
 	this.fire = function() {
-		game.enemyBulletPool.get(this.x+this.width/2, this.y, -10);
+		game.enemyBulletPool.get(this.x+this.width/2,  this.y+this.height, -10);
 	};
 
 	/*
