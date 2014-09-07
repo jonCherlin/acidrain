@@ -18,6 +18,16 @@
  * http://www.superflashbros.net/as3sfxr/
  */
 
+ /*ADJUSTABLE VARIABLES*/
+ var percentFire = .01;
+ var rainSpeed = 5;
+
+ var enemyAmount = 3;
+ var enemySpeed = 1.5;
+ var enemySpacing = 150;
+ var enemyScreenEdge = 480;
+
+
 /**
  * Initialize the Game and start it.
  */
@@ -564,7 +574,6 @@ Character.prototype = new Drawable();
  */
 function Enemy() {
 	//var percentFire = .02;
-	var percentFire = .01;
 	var chance = 0;
 	this.alive = false;
 	//this.collidableWith = "bullet";
@@ -580,10 +589,9 @@ function Enemy() {
 		this.speedX = 0;
 		this.speedY = speed;
 		this.alive = true;
-		// this.leftEdge = this.x - 40;
-		// this.rightEdge = this.x + 40;
 		this.leftEdge = this.x - 40;
-		this.rightEdge = this.x + 480;
+		// this.rightEdge = this.x + 40;
+		this.rightEdge = this.x + enemyScreenEdge;
 		this.bottomEdge = 0;
 	};
 
@@ -596,12 +604,13 @@ function Enemy() {
 		this.y += this.speedY;
 		if (this.x <= this.leftEdge) {
 			this.speedX = this.speed;
+			console.log(this.speedX);
 		}
 		else if (this.x >= this.rightEdge + this.width) {
 			this.speedX = -this.speed;
 		}
 		else if (this.y >= this.bottomEdge) {
-			this.speed = 1.5;
+			this.speed = enemySpeed;
 			this.speedY = 0;
 			this.y -= 5;
 			this.speedX = -this.speed;
@@ -629,7 +638,7 @@ function Enemy() {
 	 */
 	this.fire = function() {
 		//game.enemyBulletPool.get(this.x+this.width/2,  this.y+this.height, -10);
-		game.enemyBulletPool.get(this.x+this.width/2,  this.y+this.height, -5);
+		game.enemyBulletPool.get(this.x+this.width/2,  this.y+this.height, -rainSpeed);
 	};
 
 	/*
@@ -706,7 +715,7 @@ function Game() {
 
 			// Initialize the enemy pool object
 			//this.enemyPool = new Pool(9);
-			this.enemyPool = new Pool(3);
+			this.enemyPool = new Pool(enemyAmount);
 			this.enemyPool.init("enemy");
 			this.spawnWave();
 
@@ -747,7 +756,7 @@ function Game() {
 		for (var i = 1; i <= 18; i++) {
 			this.enemyPool.get(x,y,2);
 			// x += width + 80;
-			x += width + 150;
+			x += width + enemySpacing;
 			if (i % 9 == 0) {
 				x = 0;
 				y += spacer
