@@ -563,7 +563,8 @@ Character.prototype = new Drawable();
  * Create the Enemy character object.
  */
 function Enemy() {
-	var percentFire = .02;
+	//var percentFire = .02;
+	var percentFire = .01;
 	var chance = 0;
 	this.alive = false;
 	//this.collidableWith = "bullet";
@@ -579,8 +580,10 @@ function Enemy() {
 		this.speedX = 0;
 		this.speedY = speed;
 		this.alive = true;
+		// this.leftEdge = this.x - 40;
+		// this.rightEdge = this.x + 40;
 		this.leftEdge = this.x - 40;
-		this.rightEdge = this.x + 40;
+		this.rightEdge = this.x + 480;
 		this.bottomEdge = 0;
 	};
 
@@ -625,7 +628,8 @@ function Enemy() {
 	 * Fires a bullet
 	 */
 	this.fire = function() {
-		game.enemyBulletPool.get(this.x+this.width/2,  this.y+this.height, -10);
+		//game.enemyBulletPool.get(this.x+this.width/2,  this.y+this.height, -10);
+		game.enemyBulletPool.get(this.x+this.width/2,  this.y+this.height, -5);
 	};
 
 	/*
@@ -701,11 +705,13 @@ function Game() {
 			               imageRepository.character.width, imageRepository.character.height);
 
 			// Initialize the enemy pool object
-			this.enemyPool = new Pool(9);
+			//this.enemyPool = new Pool(9);
+			this.enemyPool = new Pool(3);
 			this.enemyPool.init("enemy");
 			this.spawnWave();
 
-			this.enemyBulletPool = new Pool(50);
+			//this.enemyBulletPool = new Pool(50);
+			this.enemyBulletPool = new Pool(15);
 			this.enemyBulletPool.init("enemyBullet");
 
 			// Start QuadTree
@@ -741,7 +747,8 @@ function Game() {
 		var spacer = y * 1.5;
 		for (var i = 1; i <= 18; i++) {
 			this.enemyPool.get(x,y,2);
-			x += width + 80;
+			// x += width + 80;
+			x += width + 150;
 			if (i % 9 == 0) {
 				x = 0;
 				y += spacer
