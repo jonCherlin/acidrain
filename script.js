@@ -19,6 +19,15 @@
  */
 
  /*ADJUSTABLE VARIABLES*/
+ var timeLimitSecsTenths = 0;
+ var timeLimitSecsHundredths = 0;
+ var timeLimitMins = 2;
+ var timerExecute = setInterval(function(){myTimer()}, 1000);
+
+ var secsTenthsZero = false;
+ var secsHundredthsZero = false;
+ var mins = false;
+
  var percentFire = .01;
  var rainSpeed = 5;
 
@@ -26,7 +35,6 @@
  var enemySpeed = 1.5;
  var enemySpacing = 150;
  var enemyScreenEdge = 480;
-
 
 /**
  * Initialize the Game and start it.
@@ -36,6 +44,51 @@ var game = new Game();
 
 function init() {
 	game.init();
+}
+
+/*GAME TIMER*/
+function myTimer() {
+	if(timeLimitSecsTenths <= 0) {
+		timeLimitSecsHundredths -= 1;
+		timeLimitSecsTenths = 10;
+
+		if(mins) {
+			secsTenthsZero = true;
+		}
+	}
+
+	if(timeLimitSecsHundredths < 0) {
+		timeLimitMins -= 1;
+		timeLimitSecsHundredths = 5;
+
+		if(mins) {
+			secsHundredthsZero = true;
+		}
+	}
+
+	if(timeLimitMins <= 0) {
+		timeLimitMins = 0;
+
+		mins = true;
+	}
+
+	timeLimitSecsTenths -= 1;
+
+	if(secsTenthsZero && secsHundredthsZero && mins) {
+		
+ 		game.character.alive = false;
+
+ 		clearInterval(timerExecute);
+
+ 		timeLimitSecsTenths = 0;
+		timeLimitSecsHundredths = 0;
+		timeLimitMins = 0;
+
+	}
+
+    document.getElementById("mins").innerHTML = timeLimitMins + ':';
+    document.getElementById("secsHundredths").innerHTML = timeLimitSecsHundredths;
+    document.getElementById("secsTenths").innerHTML = timeLimitSecsTenths;
 }
 
 
@@ -562,6 +615,10 @@ function Character() {
 		else {
 			this.alive = false;
 			game.gameOver();
+			clearInterval(timerExecute);
+			document.getElementById("mins").innerHTML = '2' + ':';
+    		document.getElementById("secsHundredths").innerHTML = '0';
+    		document.getElementById("secsTenths").innerHTML = '0';
 		}	
 	};
 
@@ -604,7 +661,6 @@ function Enemy() {
 		this.y += this.speedY;
 		if (this.x <= this.leftEdge) {
 			this.speedX = this.speed;
-			console.log(this.speedX);
 		}
 		else if (this.x >= this.rightEdge + this.width) {
 			this.speedX = -this.speed;
@@ -793,6 +849,11 @@ function Game() {
 
 		this.backgroundAudio.currentTime = 0;
 		//this.backgroundAudio.play();
+
+		timeLimitSecsTenths = 10;
+		timeLimitSecsHundredths = 5;
+		timeLimitMins = 1;
+		timerExecute = setInterval(function(){myTimer()}, 1000);
 
 		this.start();
 	};
