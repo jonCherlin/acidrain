@@ -710,8 +710,7 @@ function Game() {
 			this.enemyPool.init("enemy");
 			this.spawnWave();
 
-			//this.enemyBulletPool = new Pool(50);
-			this.enemyBulletPool = new Pool(15);
+			this.enemyBulletPool = new Pool(50);
 			this.enemyBulletPool.init("enemyBullet");
 
 			// Start QuadTree
