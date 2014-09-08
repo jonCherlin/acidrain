@@ -74,21 +74,27 @@ function myTimer() {
 
 	timeLimitSecsTenths -= 1;
 
+	document.getElementById("mins").innerHTML = timeLimitMins + ':';
+    document.getElementById("secsHundredths").innerHTML = timeLimitSecsHundredths;
+    document.getElementById("secsTenths").innerHTML = timeLimitSecsTenths;
+
 	if(secsTenthsZero && secsHundredthsZero && mins) {
 		
  		game.character.alive = false;
+ 		gameover = true;
+ 		document.getElementById('win').style.display = "block";
 
  		clearInterval(timerExecute);
 
- 		timeLimitSecsTenths = 0;
-		timeLimitSecsHundredths = 0;
-		timeLimitMins = 0;
+ 		mins = false;
+ 		secsHundredthsZero = false;
+ 		secsTenthsZero = false;
+
+ 		document.getElementById("mins").innerHTML = '2' + ':';
+		document.getElementById("secsHundredths").innerHTML = '0';
+		document.getElementById("secsTenths").innerHTML = '0';
 
 	}
-
-    document.getElementById("mins").innerHTML = timeLimitMins + ':';
-    document.getElementById("secsHundredths").innerHTML = timeLimitSecsHundredths;
-    document.getElementById("secsTenths").innerHTML = timeLimitSecsTenths;
 }
 
 
@@ -833,6 +839,7 @@ function Game() {
 		this.gameOverAudio.pause();
 
 		document.getElementById('game-over').style.display = "none";
+		document.getElementById('win').style.display = "none";
 		this.bgContext.clearRect(0, 0, this.bgCanvas.width, this.bgCanvas.height);
 		this.characterContext.clearRect(0, 0, this.characterCanvas.width, this.characterCanvas.height);
 		this.mainContext.clearRect(0, 0, this.mainCanvas.width, this.mainCanvas.height);
@@ -869,16 +876,16 @@ function Game() {
 }
 
 $(document).keydown(function(key) {
-			switch(parseInt(key.which)) {
-				case 13:
-					if(gameover) {
-						game.restart();	
-					}
-					break;
-				defaultkey: "value"
-					break;
+	switch(parseInt(key.which)) {
+		case 13:
+			if(gameover) {
+				game.restart();	
 			}
-		});
+			break;
+		defaultkey: "value"
+			break;
+	}
+});
 
 /**
  * Ensure the game sound has loaded before starting the game
