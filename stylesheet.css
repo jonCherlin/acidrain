@@ -46,12 +46,18 @@ canvas {
 	text-align: center;
 	background: black;
 }
+#win.game-over {
+	color: rgb(13, 185, 13);
+}
 .game-over span {
 	font-size: 20px;
 	cursor: pointer;
 	position: relative;
 	display: block;
 	color: rgb(13, 185, 13);
+}
+#win.game-over span {
+	color: red;
 }
 .game-over span:hover {
 	color: #FFD700;
