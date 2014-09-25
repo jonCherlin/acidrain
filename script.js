@@ -667,6 +667,7 @@ function Enemy() {
 		this.y += this.speedY;
 		if (this.x <= this.leftEdge) {
 			this.speedX = this.speed;
+			console.log('test');
 		}
 		else if (this.x >= this.rightEdge + this.width) {
 			this.speedX = -this.speed;
