@@ -665,12 +665,13 @@ function Enemy() {
 		this.context.clearRect(this.x-1, this.y, this.width+1, this.height);
 		this.x += this.speedX;
 		this.y += this.speedY;
-		if (this.x <= this.leftEdge) {
-			this.speedX = this.speed;
-			console.log('test');
+		if (this.x + (this.width * enemyAmount) <= this.leftEdge) {
+			//this.speedX = this.speed;
+			this.x = this.rightEdge + (this.width * enemyAmount) + this.width;
+			this.speedX = -this.speed;
 		}
 		else if (this.x >= this.rightEdge + this.width) {
-			this.speedX = -this.speed;
+			//this.speedX = -this.speed;
 		}
 		else if (this.y >= this.bottomEdge) {
 			this.speed = enemySpeed;
