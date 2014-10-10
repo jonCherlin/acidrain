@@ -31,7 +31,7 @@
  var percentFire = .01;
  var rainSpeed = 5;
 
- var enemyAmount = 3;
+ var enemyAmount = 6;
  var enemySpeed = 1.5;
  var enemySpacing = 150;
  var enemyScreenEdge = 480;
@@ -652,10 +652,14 @@ function Enemy() {
 		this.speedX = 0;
 		this.speedY = speed;
 		this.alive = true;
-		this.leftEdge = this.x - 40;
-		// this.rightEdge = this.x + 40;
-		this.rightEdge = this.x + enemyScreenEdge;
-		this.bottomEdge = 0;
+		this.leftEdge = this.x - 90;
+		this.rightEdge = this.x + 90;
+		this.bottomEdge = this.y + 140;
+
+		// if(this.y < -57 && this.y >= -142.5) {
+		// 	this.speedX = this.speedX * -1;
+		// }
+		
 	};
 
 	/*
@@ -665,19 +669,35 @@ function Enemy() {
 		this.context.clearRect(this.x-1, this.y, this.width+1, this.height);
 		this.x += this.speedX;
 		this.y += this.speedY;
+		//console.log(this.y);
 		if (this.x + (this.width * enemyAmount) <= this.leftEdge) {
 			//this.speedX = this.speed;
 			this.x = this.rightEdge + (this.width * enemyAmount) + this.width;
 			this.speedX = -this.speed;
 		}
-		else if (this.x >= this.rightEdge + this.width) {
-			//this.speedX = -this.speed;
+		else if ( (this.x - (this.width * enemyAmount) >= this.rightEdge) && (this.y <= -7.5) ) {
+			//console.log(this.y);
+			this.x = this.leftEdge - (this.width * enemyAmount) + this.width;
+			this.speedX = +this.speed;
+			//console.log(this.x);
 		}
+		// else if (this.x >= this.rightEdge + this.width) {
+		// 	//this.speedX = -this.speed;
+		// }
 		else if (this.y >= this.bottomEdge) {
 			this.speed = enemySpeed;
 			this.speedY = 0;
 			this.y -= 5;
-			this.speedX = -this.speed;
+			//this.speedX = -this.speed;
+
+			if(this.y <= -7.5) {
+				this.speedX = +this.speed;
+			}
+			else {
+				this.speedX = -this.speed;
+				//console.log(this.speedX);
+			}
+			//console.log(this.y);
 		}
 
 		if (!this.isColliding) {
@@ -817,16 +837,20 @@ function Game() {
 		var x = 0;
 		var y = -height;
 		var spacer = y * 1.5;
-		for (var i = 1; i <= 18; i++) {
+		for (var i = 1; i <= enemyAmount; i++) {
 			this.enemyPool.get(x,y,2);
 			// x += width + 80;
 			x += width + enemySpacing;
-			if (i % 9 == 0) {
+			if (i % 3 == 0) {
 				x = 0;
-				y += spacer
+				y += spacer;
 			}
 		}
 	}
+
+	// if(enemy.y < -57 && enemy.y >= -142.5) {
+	// 	this.speedX = this.speedX * -1;
+	// }
 
 	// Start the animation loop
 	this.start = function() {
