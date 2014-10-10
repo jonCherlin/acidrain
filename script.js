@@ -28,11 +28,11 @@
  var secsHundredthsZero = false;
  var mins = false;
 
- var percentFire = .01;
- var rainSpeed = 5;
+ var percentFire = .03;
+ var rainSpeed = 7;
 
  var enemyAmount = 6;
- var enemySpeed = 1.5;
+ var enemySpeed = 2;
  var enemySpacing = 300;
  var enemyScreenEdge = 480;
 
