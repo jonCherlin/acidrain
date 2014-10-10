@@ -28,7 +28,7 @@
  var secsHundredthsZero = false;
  var mins = false;
 
- var percentFire = .03;
+ var percentFire = 0;
  var rainSpeed = 7;
 
  var enemyAmount = 6;
@@ -48,6 +48,7 @@ function init() {
 
 /*GAME TIMER*/
 function myTimer() {
+
 	if(timeLimitSecsTenths <= 0) {
 		timeLimitSecsHundredths -= 1;
 		timeLimitSecsTenths = 10;
@@ -674,6 +675,7 @@ function Enemy() {
 			//this.speedX = this.speed;
 			this.x = this.rightEdge + (this.width * enemyAmount) + this.width;
 			this.speedX = -this.speed;
+			//percentFire += .1;
 		}
 		else if ( (this.x - (this.width * enemyAmount) >= this.rightEdge) && (this.y <= -7.5) ) {
 			//console.log(this.y);
@@ -698,6 +700,7 @@ function Enemy() {
 				//console.log(this.speedX);
 			}
 			//console.log(this.y);
+			percentFire = .03;
 		}
 
 		if (!this.isColliding) {
@@ -861,6 +864,7 @@ function Game() {
 
 	// Restart the game
 	this.restart = function() {
+		percentFire = 0;
 		gameover = false;
 		this.gameOverAudio.pause();
 
