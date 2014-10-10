@@ -33,7 +33,7 @@
 
  var enemyAmount = 6;
  var enemySpeed = 1.5;
- var enemySpacing = 150;
+ var enemySpacing = 300;
  var enemyScreenEdge = 480;
 
 /**
@@ -834,7 +834,7 @@ function Game() {
 	this.spawnWave = function() {
 		var height = imageRepository.enemy.height;
 		var width = 40;
-		var x = 0;
+		var x = 100;
 		var y = -height;
 		var spacer = y * 1.5;
 		for (var i = 1; i <= enemyAmount; i++) {
@@ -842,7 +842,7 @@ function Game() {
 			// x += width + 80;
 			x += width + enemySpacing;
 			if (i % 3 == 0) {
-				x = 0;
+				x = 100;
 				y += spacer;
 			}
 		}
