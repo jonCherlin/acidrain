@@ -677,7 +677,7 @@ function Enemy() {
 			this.speedX = -this.speed;
 			//percentFire += .1;
 		}
-		else if ( (this.x - (this.width * enemyAmount) >= this.rightEdge) && (this.y <= -7.5) ) {
+		else if ( (this.x - (this.width * enemyAmount) >= this.rightEdge + 1000) && (this.y <= -7.5) ) {
 			//console.log(this.y);
 			this.x = this.leftEdge - (this.width * enemyAmount) + this.width;
 			this.speedX = +this.speed;
@@ -845,7 +845,7 @@ function Game() {
 			// x += width + 80;
 			x += width + enemySpacing;
 			if (i % 3 == 0) {
-				x = 100;
+				x = -1000;
 				y += spacer;
 			}
 		}
