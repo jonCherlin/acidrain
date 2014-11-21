@@ -671,15 +671,17 @@ function Enemy() {
 		this.x += this.speedX;
 		this.y += this.speedY;
 		//console.log(this.y);
-		if (this.x + (this.width * enemyAmount) <= this.leftEdge) {
+		if (this.x + (this.width * enemyAmount) <= this.leftEdge - 1000) {
 			//this.speedX = this.speed;
-			this.x = this.rightEdge + (this.width * enemyAmount) + this.width;
+			//this.x = this.rightEdge + (this.width * enemyAmount) + this.width;
+			this.x = this.rightEdge;
 			this.speedX = -this.speed;
 			//percentFire += .1;
 		}
 		else if ( (this.x - (this.width * enemyAmount) >= this.rightEdge + 1000) && (this.y <= -7.5) ) {
 			//console.log(this.y);
-			this.x = this.leftEdge - (this.width * enemyAmount) + this.width;
+			//this.x = this.leftEdge - (this.width * enemyAmount) + this.width;
+			this.x = this.leftEdge;
 			this.speedX = +this.speed;
 			//console.log(this.x);
 		}
@@ -837,7 +839,7 @@ function Game() {
 	this.spawnWave = function() {
 		var height = imageRepository.enemy.height;
 		var width = 40;
-		var x = 100;
+		var x = 1040;
 		var y = -height;
 		var spacer = y * 1.5;
 		for (var i = 1; i <= enemyAmount; i++) {
