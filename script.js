@@ -49,6 +49,15 @@ function init() {
 /*GAME TIMER*/
 function myTimer() {
 
+	/*SPEED UP RAIN SPEED WITH TIME*/
+	/*if(timeLimitMins <= 1 && timeLimitSecsHundredths <= 2 && timeLimitSecsTenths <= 9) {
+		rainSpeed = 10;
+	}
+
+	if(timeLimitMins <= 0 && timeLimitSecsHundredths <= 2 && timeLimitSecsTenths <= 9) {
+		rainSpeed = 12;
+	}*/
+
 	if(timeLimitSecsTenths <= 0) {
 		timeLimitSecsHundredths -= 1;
 		timeLimitSecsTenths = 10;
@@ -728,7 +737,10 @@ function Enemy() {
 	this.fire = function() {
 		//game.enemyBulletPool.get(this.x+this.width/2,  this.y+this.height, -10);
 		//game.enemyBulletPool.get(this.x+this.width/2,  this.y+this.height, -rainSpeed);
-		game.enemyBulletPool.get(this.x + (Math.floor(Math.random() * this.width) + 1),  this.y+this.height, -rainSpeed);
+
+		/*RANDOM RAIN SPEED Math.floor(Math.random()*(max-min+1)+min);*/
+		rainSpeed = Math.floor(Math.random()*(10 - 7 + 1) + 7);;
+		game.enemyBulletPool.get(this.x + (Math.random()*(this.width - 1 + 1) + 1),  this.y+this.height, -rainSpeed);
 	};
 
 	/*
@@ -894,6 +906,8 @@ function Game() {
 		timeLimitSecsHundredths = 5;
 		timeLimitMins = 1;
 		timerExecute = setInterval(function(){myTimer()}, 1000);
+
+		rainSpeed = 7;
 
 		this.start();
 	};
