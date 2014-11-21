@@ -839,7 +839,7 @@ function Game() {
 	this.spawnWave = function() {
 		var height = imageRepository.enemy.height;
 		var width = 40;
-		var x = 1040;
+		var x = 1200;
 		var y = -height;
 		var spacer = y * 1.5;
 		for (var i = 1; i <= enemyAmount; i++) {
