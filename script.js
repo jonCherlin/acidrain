@@ -727,7 +727,8 @@ function Enemy() {
 	 */
 	this.fire = function() {
 		//game.enemyBulletPool.get(this.x+this.width/2,  this.y+this.height, -10);
-		game.enemyBulletPool.get(this.x+this.width/2,  this.y+this.height, -rainSpeed);
+		//game.enemyBulletPool.get(this.x+this.width/2,  this.y+this.height, -rainSpeed);
+		game.enemyBulletPool.get(this.x + (Math.floor(Math.random() * this.width) + 1),  this.y+this.height, -rainSpeed);
 	};
 
 	/*
