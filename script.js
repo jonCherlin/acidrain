@@ -22,7 +22,7 @@
  var timeLimitSecsTenths = 0;
  var timeLimitSecsHundredths = 0;
  var timeLimitMins = 2;
- var timerExecute = setInterval(function(){myTimer()}, 1000);
+ var timerExecute;
 
  var secsTenthsZero = false;
  var secsHundredthsZero = false;
@@ -875,6 +875,7 @@ function Game() {
 		this.character.draw();
 		//this.backgroundAudio.play();
 		animate();
+		timerExecute = setInterval(function(){myTimer()}, 1000);
 	};
 
 	// Restart the game
@@ -905,7 +906,7 @@ function Game() {
 		timeLimitSecsTenths = 10;
 		timeLimitSecsHundredths = 5;
 		timeLimitMins = 1;
-		timerExecute = setInterval(function(){myTimer()}, 1000);
+		//timerExecute = setInterval(function(){myTimer()}, 1000);
 
 		rainSpeed = 7;
 
