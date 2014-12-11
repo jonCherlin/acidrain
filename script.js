@@ -740,7 +740,7 @@ function Enemy() {
 
 		/*RANDOM RAIN SPEED Math.floor(Math.random()*(max-min+1)+min);*/
 		rainSpeed = Math.floor(Math.random()*(10 - 7 + 1) + 7);;
-		game.enemyBulletPool.get(this.x + (Math.random()*(this.width - 1 + 1) + 1),  this.y+this.height, -rainSpeed);
+		game.enemyBulletPool.get(this.x + (Math.random()*(this.width - 1 + 1) + 1),  this.y+this.height/2, -rainSpeed);
 	};
 
 	/*
@@ -1018,8 +1018,9 @@ function animate() {
 
 		game.background.draw();
 		game.character.move();
-		game.enemyPool.animate();
+		
 		game.enemyBulletPool.animate();
+		game.enemyPool.animate();
 	}
 }
 
