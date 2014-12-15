@@ -632,9 +632,9 @@ function Character() {
 			this.alive = false;
 			game.gameOver();
 			clearInterval(timerExecute);
-			document.getElementById("mins").innerHTML = '2' + ':';
-    		document.getElementById("secsHundredths").innerHTML = '0';
-    		document.getElementById("secsTenths").innerHTML = '0';
+			// document.getElementById("mins").innerHTML = '2' + ':';
+   //  		document.getElementById("secsHundredths").innerHTML = '0';
+   //  		document.getElementById("secsTenths").innerHTML = '0';
 		}	
 	};
 
@@ -903,6 +903,9 @@ function Game() {
 		this.backgroundAudio.currentTime = 0;
 		//this.backgroundAudio.play();
 
+		document.getElementById("mins").innerHTML = '2' + ':';
+    	document.getElementById("secsHundredths").innerHTML = '0';
+    	document.getElementById("secsTenths").innerHTML = '0';
 		timeLimitSecsTenths = 10;
 		timeLimitSecsHundredths = 5;
 		timeLimitMins = 1;
