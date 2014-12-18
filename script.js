@@ -929,6 +929,7 @@ function Game() {
 $(document).keydown(function(key) {
 	switch(parseInt(key.which)) {
 		case 13:
+		case 32:
 			if(gameover) {
 				game.restart();	
 			}
