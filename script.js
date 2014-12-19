@@ -100,7 +100,7 @@ function myTimer() {
  		secsHundredthsZero = false;
  		secsTenthsZero = false;
 
- 		document.getElementById("mins").innerHTML = '2' + ':';
+ 		document.getElementById("mins").innerHTML = '0' + ':';
 		document.getElementById("secsHundredths").innerHTML = '0';
 		document.getElementById("secsTenths").innerHTML = '0';
 
