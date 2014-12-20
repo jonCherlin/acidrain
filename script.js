@@ -902,13 +902,17 @@ function Game() {
 
 		this.backgroundAudio.currentTime = 0;
 		//this.backgroundAudio.play();
+		
+		mins = false;
+ 		secsHundredthsZero = false;
+ 		secsTenthsZero = false;
 
 		document.getElementById("mins").innerHTML = '2' + ':';
     	document.getElementById("secsHundredths").innerHTML = '0';
     	document.getElementById("secsTenths").innerHTML = '0';
-		timeLimitSecsTenths = 10;
-		timeLimitSecsHundredths = 5;
-		timeLimitMins = 1;
+		timeLimitSecsTenths = 0;
+		timeLimitSecsHundredths = 0;
+		timeLimitMins = 2;
 		//timerExecute = setInterval(function(){myTimer()}, 1000);
 
 		rainSpeed = 7;
