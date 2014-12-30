@@ -29,7 +29,7 @@
  var mins = false;
 
  var percentFire = 0;
- var rainSpeed = 7;
+ var rainSpeed = 0;
 
  var enemyAmount = 6;
  var enemySpeed = 2;
@@ -189,7 +189,7 @@ function Drawable() {
  * canvas and creates the illusion of moving by panning the image.
  */
 function Background() {
-	this.speed = 1; // Redefine speed of the background for panning
+	this.speed = 0; // Redefine speed of the background for panning
 
 	// Implement abstract function
 	this.draw = function() {
@@ -739,7 +739,7 @@ function Enemy() {
 		//game.enemyBulletPool.get(this.x+this.width/2,  this.y+this.height, -rainSpeed);
 
 		/*RANDOM RAIN SPEED Math.floor(Math.random()*(max-min+1)+min);*/
-		rainSpeed = Math.floor(Math.random()*(10 - 7 + 1) + 7);;
+		rainSpeed = Math.floor(Math.random()*(10 - 7 + 1) + 7);
 		game.enemyBulletPool.get(this.x + (Math.random()*(this.width - 1 + 1) + 1),  this.y+this.height/2, -rainSpeed);
 	};
 
@@ -828,23 +828,24 @@ function Game() {
 			this.quadTree = new QuadTree({x:0,y:0,width:this.mainCanvas.width,height:this.mainCanvas.height});
 
 			// Audio files
-			this.laser = new SoundPool(10);
-			this.laser.init("laser");
+			// this.laser = new SoundPool(10);
+			// this.laser.init("laser");
 
-			this.explosion = new SoundPool(20);
-			this.explosion.init("explosion");
+			// this.explosion = new SoundPool(20);
+			// this.explosion.init("explosion");
 
-			this.backgroundAudio = new Audio("sounds/kick_shock.wav");
-			this.backgroundAudio.loop = true;
-			this.backgroundAudio.volume = .25;
+			// this.backgroundAudio = new Audio("sounds/kick_shock.wav");
+			// this.backgroundAudio.loop = true;
+			// this.backgroundAudio.volume = .25;
 			//this.backgroundAudio.load();
 
-			this.gameOverAudio = new Audio("sounds/game_over.wav");
-			this.gameOverAudio.loop = true;
-			this.gameOverAudio.volume = .25;
+			// this.gameOverAudio = new Audio("sounds/game_over.wav");
+			// this.gameOverAudio.loop = true;
+			// this.gameOverAudio.volume = .25;
 			//this.gameOverAudio.load();
 
-			this.checkAudio = window.setInterval(function(){checkReadyState()},1000);
+			// this.checkAudio = window.setInterval(function(){checkReadyState()},1000);
+			checkReadyState();
 		}
 	};
 
@@ -882,7 +883,7 @@ function Game() {
 	this.restart = function() {
 		percentFire = 0;
 		gameover = false;
-		this.gameOverAudio.pause();
+		// this.gameOverAudio.pause();
 
 		document.getElementById('game-over').style.display = "none";
 		document.getElementById('win').style.display = "none";
@@ -900,7 +901,7 @@ function Game() {
 		this.spawnWave();
 		this.enemyBulletPool.init("enemyBullet");
 
-		this.backgroundAudio.currentTime = 0;
+		//this.backgroundAudio.currentTime = 0;
 		//this.backgroundAudio.play();
 
 		document.getElementById("mins").innerHTML = '2' + ':';
@@ -911,7 +912,7 @@ function Game() {
 		timeLimitMins = 1;
 		//timerExecute = setInterval(function(){myTimer()}, 1000);
 
-		rainSpeed = 7;
+		rainSpeed = Math.floor(Math.random()*(10 - 7 + 1) + 7);
 
 		this.start();
 	};
@@ -919,8 +920,8 @@ function Game() {
 	// Game over
 	this.gameOver = function() {
 		gameover = true;
-		this.backgroundAudio.pause();
-		this.gameOverAudio.currentTime = 0;
+		// this.backgroundAudio.pause();
+		// this.gameOverAudio.currentTime = 0;
 		//this.gameOverAudio.play();
 		document.getElementById('game-over').style.display = "block";
 	};
@@ -943,11 +944,11 @@ $(document).keydown(function(key) {
  * Ensure the game sound has loaded before starting the game
  */
 function checkReadyState() {
-	if (game.gameOverAudio.readyState === 4 && game.backgroundAudio.readyState === 4) {
-		window.clearInterval(game.checkAudio);
+	//if (game.gameOverAudio.readyState === 4 && game.backgroundAudio.readyState === 4) {
+		//window.clearInterval(game.checkAudio);
 		document.getElementById('loading').style.display = "none";
 		game.start();
-	}
+	//}
 }
 
 
@@ -964,23 +965,23 @@ function SoundPool(maxSize) {
 	 * Populates the pool array with the given object
 	 */
 	this.init = function(object) {
-		if (object == "laser") {
-			for (var i = 0; i < size; i++) {
-				// Initalize the object
-				laser = new Audio("sounds/laser.wav");
-				laser.volume = .12;
-				laser.load();
-				pool[i] = laser;
-			}
-		}
-		else if (object == "explosion") {
-			for (var i = 0; i < size; i++) {
-				var explosion = new Audio("sounds/explosion.wav");
-				explosion.volume = .1;
-				explosion.load();
-				pool[i] = explosion;
-			}
-		}
+		// if (object == "laser") {
+		// 	for (var i = 0; i < size; i++) {
+		// 		// Initalize the object
+		// 		laser = new Audio("sounds/laser.wav");
+		// 		laser.volume = .12;
+		// 		laser.load();
+		// 		pool[i] = laser;
+		// 	}
+		// }
+		// else if (object == "explosion") {
+		// 	for (var i = 0; i < size; i++) {
+		// 		var explosion = new Audio("sounds/explosion.wav");
+		// 		explosion.volume = .1;
+		// 		explosion.load();
+		// 		pool[i] = explosion;
+		// 	}
+		// }
 	};
 
 	/*
