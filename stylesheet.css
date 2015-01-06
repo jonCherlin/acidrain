@@ -77,9 +77,9 @@ canvas {
 	cursor: default;
 }
 
-/*#mobile_character {
-	background: url('images/character.png') 0 0 no-repeat;
+#mobile_character {
+	/*background: url('images/character.png') 0 0 no-repeat;*/
 	width: 48px;
 	height: 48px;
 	position: absolute;
-}*/
+}

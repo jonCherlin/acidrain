@@ -813,12 +813,12 @@ function Game() {
 			this.character.init(this.characterStartX, this.characterStartY,
 			               imageRepository.character.width, imageRepository.character.height);
 
-			var touch_canvas = document.getElementById("ground"), boxleft, startx, dist = 0, touchobj = null;
+			var touch_canvas = document.getElementById("mobile_character"), boxleft, startx, dist = 0, touchobj = null;
 			touch_canvas.addEventListener("touchstart", doTouchStart, false);
 			touch_canvas.addEventListener("touchmove", doTouchMove, false);
 
 			function doTouchStart(event) {
-
+console.log(game.character.x);
 				//console.log('doTouchStart');
 
 				touchobj = event.changedTouches[0] // reference first touch point
