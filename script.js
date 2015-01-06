@@ -813,7 +813,7 @@ function Game() {
 			this.character.init(this.characterStartX, this.characterStartY,
 			               imageRepository.character.width, imageRepository.character.height);
 
-			var touch_canvas = document.getElementById("ground"), boxleft, startx, dist = 0, touchobj = null;
+			var touch_canvas = document.getElementById("mobile_character"), boxleft, startx, dist = 0, touchobj = null;
 			touch_canvas.addEventListener("touchstart", doTouchStart, false);
 			touch_canvas.addEventListener("touchmove", doTouchMove, false);
 
@@ -822,8 +822,8 @@ function Game() {
 				//console.log('doTouchStart');
 
 				touchobj = event.changedTouches[0] // reference first touch point
-				boxleft = parseInt(game.character.x) // get left position of box
-				//console.log(boxleft);
+				boxleft = parseInt(touch_canvas.style.left) // get left position of box
+				console.log(boxleft);
 				startx = parseInt(touchobj.clientX) // get x coord of touch point
 
 
@@ -843,10 +843,13 @@ function Game() {
 				// move box according to starting pos plus dist
 				// with lower limit 0 and upper limit 380 so it doesn't move outside track:
 
-				game.character.context.clearRect(game.character.x, game.character.y, game.character.width, game.character.height);
-				game.character.x = ( (boxleft + dist > 976)? 976 : (boxleft + dist < 0)? 0 : boxleft + dist );
+				//game.character.context.clearRect(game.character.x, game.character.y, game.character.width, game.character.height);
+
+				touch_canvas.style.left = ( (boxleft + dist > 976)? 976 : (boxleft + dist < 0)? 0 : boxleft + dist ) + 'px';
 
 				//console.log('game.character.x = ' + game.character.x);
+
+				console.log(touch_canvas.style.left);
 
 
 				event.preventDefault();
