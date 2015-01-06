@@ -580,7 +580,7 @@ function Character() {
 	this.type = "character";
 
 	this.init = function(x, y, width, height) {
-		// Defualt variables
+		// Default variables
 		this.x = x;
 		this.y = y;
 		this.width = width;
@@ -640,8 +640,6 @@ function Character() {
 
 }
 Character.prototype = new Drawable();
-
-
 /**
  * Create the Enemy character object.
  */
@@ -814,6 +812,46 @@ function Game() {
 			this.characterStartY = this.characterCanvas.height - imageRepository.character.height - 100;
 			this.character.init(this.characterStartX, this.characterStartY,
 			               imageRepository.character.width, imageRepository.character.height);
+
+			var touch_canvas = document.getElementById("character"), boxleft, startx, dist = 0, touchobj = null;
+			touch_canvas.addEventListener("touchstart", doTouchStart, false);
+			touch_canvas.addEventListener("touchmove", doTouchMove, false);
+
+			function doTouchStart(event) {
+
+				//console.log('doTouchStart');
+
+				touchobj = event.changedTouches[0] // reference first touch point
+				boxleft = parseInt(game.character.x) // get left position of box
+				//console.log(boxleft);
+				startx = parseInt(touchobj.clientX) // get x coord of touch point
+
+
+				event.preventDefault();
+
+				//touch_canvas_x = game.character.x;
+				//touch_canvas_y = event.targetTouches[0].pageY;
+				//alert("X=" + touch_canvas_x + " Y=" + touch_canvas_y);
+
+			}
+			function doTouchMove(event) {
+
+				//console.log('doTouchMove');
+
+				touchobj = event.changedTouches[0]; // reference first touch point for this event
+				var dist = parseInt(touchobj.clientX) - startx; // calculate dist traveled by touch point
+				// move box according to starting pos plus dist
+				// with lower limit 0 and upper limit 380 so it doesn't move outside track:
+
+				game.character.context.clearRect(game.character.x, game.character.y, game.character.width, game.character.height);
+				game.character.x = ( (boxleft + dist > 976)? 976 : (boxleft + dist < 0)? 0 : boxleft + dist );
+
+				//console.log('game.character.x = ' + game.character.x);
+
+
+				event.preventDefault();
+
+			}
 
 			// Initialize the enemy pool object
 			//this.enemyPool = new Pool(9);
