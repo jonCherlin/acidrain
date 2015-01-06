@@ -843,7 +843,7 @@ function Game() {
 				// move box according to starting pos plus dist
 				// with lower limit 0 and upper limit 380 so it doesn't move outside track:
 
-				//game.character.context.clearRect(game.character.x, game.character.y, game.character.width, game.character.height);
+				game.character.context.clearRect(game.character.x, game.character.y, game.character.width, game.character.height);
 				
 				game.character.x = ( (boxleft + dist > 976)? 976 : (boxleft + dist < 0)? 0 : boxleft + dist );
 
