@@ -144,7 +144,7 @@ var imageRepository = new function() {
 
 	// Set images src
 	this.background.src = "images/bg.png";
-	this.character.src = "images/character.png";
+	this.character.src = "images/character_umbrella.png";
 	this.enemy.src = "images/enemy.png";
 	this.enemyBullet.src = "images/bullet_enemy.png";
 }
@@ -576,6 +576,7 @@ function Character() {
 	this.speed = 8;
 	var fireRate = 15;
 	var counter = 0;
+	var hit_counter = 0;
 	this.collidableWith = "enemyBullet";
 	this.type = "character";
 
@@ -585,6 +586,7 @@ function Character() {
 		this.y = y;
 		this.width = width;
 		this.height = height;
+		//console.log(this.height);
 		this.alive = true;
 		this.isColliding = false;
 	}
@@ -629,9 +631,45 @@ function Character() {
 			this.draw();
 		}
 		else {
-			this.alive = false;
-			game.gameOver();
-			clearInterval(timerExecute);
+
+			hit_counter += 1;
+			//console.log(hit_counter);
+
+			if(hit_counter == 1) {
+				imageRepository.character.src = "images/character_rain_coat.png";
+				this.context.clearRect(this.x, this.y, this.width, this.height);
+				imageRepository.character.height = 48;
+				
+				game.characterStartY = game.characterCanvas.height - imageRepository.character.height - 100;
+
+				game.character.init(this.x, game.characterStartY,
+			               imageRepository.character.width, imageRepository.character.height);
+				this.isColliding = false;
+
+
+			}
+
+			if(hit_counter == 2) {
+
+				imageRepository.character.src = "images/character.png";
+				this.isColliding = false;
+
+			}
+
+			if(hit_counter == 3) {
+
+				imageRepository.character.src = "images/character_umbrella.png";
+				imageRepository.character.height = 96;
+				game.characterStartY = game.characterCanvas.height - imageRepository.character.height - 100;
+
+				hit_counter = 0;
+				this.alive = false;
+				game.gameOver();
+				clearInterval(timerExecute);
+
+			}
+
+
 			// document.getElementById("mins").innerHTML = '2' + ':';
    //  		document.getElementById("secsHundredths").innerHTML = '0';
    //  		document.getElementById("secsTenths").innerHTML = '0';
