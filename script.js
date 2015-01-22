@@ -228,7 +228,7 @@ function Bullet(object) {
 	};
 
 	/*
-	 * Uses a "drity rectangle" to erase the bullet and moves it.
+	 * Uses a "dirty rectangle" to erase the bullet and moves it.
 	 * Returns true if the bullet moved of the screen, indicating that
 	 * the bullet is ready to be cleared by the pool, otherwise draws
 	 * the bullet.
@@ -592,6 +592,7 @@ function Character() {
 	}
 
 	this.draw = function() {
+		this.context.clearRect(this.x, this.y, this.width, this.height);
 		this.context.drawImage(imageRepository.character, this.x, this.y);
 	};
 	this.move = function() {
@@ -856,7 +857,6 @@ function Game() {
 			touch_canvas.addEventListener("touchmove", doTouchMove, false);
 
 			function doTouchStart(event) {
-console.log(game.character.x);
 				//console.log('doTouchStart');
 
 				touchobj = event.changedTouches[0] // reference first touch point
