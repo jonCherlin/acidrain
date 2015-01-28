@@ -36,6 +36,8 @@
  var enemySpacing = 300;
  var enemyScreenEdge = 480;
 
+ var hit_counter = 0;
+
 /**
  * Initialize the Game and start it.
  */
@@ -93,6 +95,11 @@ function myTimer() {
  		game.character.alive = false;
  		gameover = true;
  		document.getElementById('win').style.display = "block";
+
+ 		hit_counter = 0;
+ 		imageRepository.character.src = "images/character_umbrella.png";
+		imageRepository.character.height = 96;
+		game.characterStartY = game.characterCanvas.height - imageRepository.character.height - 100;
 
  		clearInterval(timerExecute);
 
@@ -576,7 +583,6 @@ function Character() {
 	this.speed = 8;
 	var fireRate = 15;
 	var counter = 0;
-	var hit_counter = 0;
 	this.collidableWith = "enemyBullet";
 	this.type = "character";
 
