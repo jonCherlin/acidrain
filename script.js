@@ -917,10 +917,15 @@ function Game() {
 			// this.explosion = new SoundPool(20);
 			// this.explosion.init("explosion");
 
-			// this.backgroundAudio = new Audio("sounds/kick_shock.wav");
-			// this.backgroundAudio.loop = true;
-			// this.backgroundAudio.volume = .25;
-			//this.backgroundAudio.load();
+			this.backgroundAudio = new Audio("sounds/rain_background.wav");
+			this.backgroundAudio.loop = true;
+			this.backgroundAudio.volume = 1.00;
+			this.backgroundAudio.load();
+
+			this.backgroundMusic = new Audio("sounds/raisi_k_mario_hiphop.mp3");
+			this.backgroundMusic.loop = true;
+			this.backgroundMusic.volume = 1.00;
+			this.backgroundMusic.load();
 
 			// this.gameOverAudio = new Audio("sounds/game_over.wav");
 			// this.gameOverAudio.loop = true;
@@ -957,7 +962,8 @@ function Game() {
 	// Start the animation loop
 	this.start = function() {
 		this.character.draw();
-		//this.backgroundAudio.play();
+		this.backgroundAudio.play();
+		this.backgroundMusic.play();
 		animate();
 		timerExecute = setInterval(function(){myTimer()}, 1000);
 	};
@@ -984,8 +990,11 @@ function Game() {
 		this.spawnWave();
 		this.enemyBulletPool.init("enemyBullet");
 
-		//this.backgroundAudio.currentTime = 0;
-		//this.backgroundAudio.play();
+		this.backgroundAudio.currentTime = 0;
+		this.backgroundAudio.play();
+
+		this.backgroundMusic.currentTime = 0;
+		this.backgroundMusic.play();
 		
 		mins = false;
  		secsHundredthsZero = false;
@@ -1007,8 +1016,9 @@ function Game() {
 	// Game over
 	this.gameOver = function() {
 		gameover = true;
-		// this.backgroundAudio.pause();
-		// this.gameOverAudio.currentTime = 0;
+		this.backgroundAudio.pause();
+		this.backgroundMusic.pause();
+		//this.gameOverAudio.currentTime = 0;
 		//this.gameOverAudio.play();
 		document.getElementById('game-over').style.display = "block";
 	};
