@@ -131,16 +131,13 @@ var imageRepository = new function() {
 	this.enemyBullet = new Image();
 
 	// Ensure all images have loaded before starting the game
-	var numImages = 4;
+	var numImages = 3;
 	var numLoaded = 0;
 	function imageLoaded() {
 		numLoaded++;
 		if (numLoaded === numImages) {
 			window.init();
 		}
-	}
-	this.background.onload = function() {
-		imageLoaded();
 	}
 	this.character.onload = function() {
 		imageLoaded();
@@ -153,7 +150,6 @@ var imageRepository = new function() {
 	}
 
 	// Set images src
-	this.background.src = "images/bg.png";
 	this.character.src = "images/character_umbrella.png";
 	this.enemy.src = "images/enemy.png";
 	this.enemyBullet.src = "images/bullet_enemy.png";
