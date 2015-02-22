@@ -31,10 +31,10 @@
  var percentFire = 0;
  var rainSpeed = 0;
 
- var enemyAmount = 6;
- var enemySpeed = 2;
- var enemySpacing = 300;
- var enemyScreenEdge = 480;
+ var cloudAmount = 6;
+ var cloudSpeed = 2;
+ var cloudSpacing = 300;
+ var cloudScreenEdge = 480;
 
  var hit_counter = 0;
 
@@ -127,8 +127,8 @@ var imageRepository = new function() {
 	// Define images
 	this.background = new Image();
 	this.character = new Image();
-	this.enemy = new Image();
-	this.enemyBullet = new Image();
+	this.cloud = new Image();
+	this.rain = new Image();
 
 	// Ensure all images have loaded before starting the game
 	var numImages = 3;
@@ -142,17 +142,17 @@ var imageRepository = new function() {
 	this.character.onload = function() {
 		imageLoaded();
 	}
-	this.enemy.onload = function() {
+	this.cloud.onload = function() {
 		imageLoaded();
 	}
-	this.enemyBullet.onload = function() {
+	this.rain.onload = function() {
 		imageLoaded();
 	}
 
 	// Set images src
 	this.character.src = "images/character_umbrella.png";
-	this.enemy.src = "images/enemy.png";
-	this.enemyBullet.src = "images/bullet_enemy.png";
+	this.cloud.src = "images/cloud.png";
+	this.rain.src = "images/rain.png";
 }
 
 
@@ -246,12 +246,12 @@ function Bullet(object) {
 		if (this.isColliding) {
 			return true;
 		}
-		else if (self === "enemyBullet" && this.y >= (this.canvasHeight - 100)) {
+		else if (self === "rain" && this.y >= (this.canvasHeight - 100)) {
 			return true;
 		}
 		else {
-			if (self === "enemyBullet") {
-				this.context.drawImage(imageRepository.enemyBullet, this.x, this.y);
+			if (self === "rain") {
+				this.context.drawImage(imageRepository.rain, this.x, this.y);
 			}
 
 			return false;
@@ -510,21 +510,21 @@ function Pool(maxSize) {
 	 * Populates the pool array with the given object
 	 */
 	this.init = function(object) {
-		if (object == "enemy") {
+		if (object == "cloud") {
 			for (var i = 0; i < size; i++) {
-				var enemy = new Enemy();
-				enemy.init(0,0, imageRepository.enemy.width,
-									 imageRepository.enemy.height);
-				pool[i] = enemy;
+				var cloud = new Cloud();
+				cloud.init(0,0, imageRepository.cloud.width,
+									 imageRepository.cloud.height);
+				pool[i] = cloud;
 			}
 		}
-		else if (object == "enemyBullet") {
+		else if (object == "rain") {
 			for (var i = 0; i < size; i++) {
-				var bullet = new Bullet("enemyBullet");
-				bullet.init(0,0, imageRepository.enemyBullet.width,
-										imageRepository.enemyBullet.height);
+				var bullet = new Bullet("rain");
+				bullet.init(0,0, imageRepository.rain.width,
+										imageRepository.rain.height);
 				bullet.collidableWith = "character";
-				bullet.type = "enemyBullet";
+				bullet.type = "rain";
 				pool[i] = bullet;
 			}
 		}
@@ -582,7 +582,7 @@ function Character() {
 	this.speed = 8;
 	var fireRate = 15;
 	var counter = 0;
-	this.collidableWith = "enemyBullet";
+	this.collidableWith = "rain";
 	this.type = "character";
 
 	this.init = function(x, y, width, height) {
@@ -685,17 +685,17 @@ function Character() {
 }
 Character.prototype = new Drawable();
 /**
- * Create the Enemy character object.
+ * Create the cloud character object.
  */
-function Enemy() {
+function Cloud() {
 	//var percentFire = .02;
 	var chance = 0;
 	this.alive = false;
 	//this.collidableWith = "bullet";
-	this.type = "enemy";
+	this.type = "cloud";
 
 	/*
-	 * Sets the Enemy values
+	 * Sets the cloud values
 	 */
 	this.spawn = function(x, y, speed) {
 		this.x = x;
@@ -715,23 +715,23 @@ function Enemy() {
 	};
 
 	/*
-	 * Move the enemy
+	 * Move the cloud
 	 */
 	this.draw = function() {
 		this.context.clearRect(this.x-1, this.y, this.width+1, this.height);
 		this.x += this.speedX;
 		this.y += this.speedY;
 		//console.log(this.y);
-		if (this.x + (this.width * enemyAmount) <= this.leftEdge - 1000) {
+		if (this.x + (this.width * cloudAmount) <= this.leftEdge - 1000) {
 			//this.speedX = this.speed;
-			//this.x = this.rightEdge + (this.width * enemyAmount) + this.width;
+			//this.x = this.rightEdge + (this.width * cloudAmount) + this.width;
 			this.x = this.rightEdge;
 			this.speedX = -this.speed;
 			//percentFire += .1;
 		}
-		else if ( (this.x - (this.width * enemyAmount) >= this.rightEdge + 1000) && (this.y <= -7.5) ) {
+		else if ( (this.x - (this.width * cloudAmount) >= this.rightEdge + 1000) && (this.y <= -7.5) ) {
 			//console.log(this.y);
-			//this.x = this.leftEdge - (this.width * enemyAmount) + this.width;
+			//this.x = this.leftEdge - (this.width * cloudAmount) + this.width;
 			this.x = this.leftEdge;
 			this.speedX = +this.speed;
 			//console.log(this.x);
@@ -740,7 +740,7 @@ function Enemy() {
 		// 	//this.speedX = -this.speed;
 		// }
 		else if (this.y >= this.bottomEdge) {
-			this.speed = enemySpeed;
+			this.speed = cloudSpeed;
 			this.speedY = 0;
 			this.y -= 5;
 			//this.speedX = -this.speed;
@@ -757,9 +757,9 @@ function Enemy() {
 		}
 
 		if (!this.isColliding) {
-			this.context.drawImage(imageRepository.enemy, this.x, this.y);
+			this.context.drawImage(imageRepository.cloud, this.x, this.y);
 
-			// Enemy has a chance to shoot every movement
+			// cloud has a chance to shoot every movement
 			chance = Math.floor(Math.random()*101);
 			if (chance/100 < percentFire) {
 				this.fire();
@@ -777,16 +777,16 @@ function Enemy() {
 	 * Fires a bullet
 	 */
 	this.fire = function() {
-		//game.enemyBulletPool.get(this.x+this.width/2,  this.y+this.height, -10);
-		//game.enemyBulletPool.get(this.x+this.width/2,  this.y+this.height, -rainSpeed);
+		//game.rainPool.get(this.x+this.width/2,  this.y+this.height, -10);
+		//game.rainPool.get(this.x+this.width/2,  this.y+this.height, -rainSpeed);
 
 		/*RANDOM RAIN SPEED Math.floor(Math.random()*(max-min+1)+min);*/
 		rainSpeed = Math.floor(Math.random()*(10 - 7 + 1) + 7);
-		game.enemyBulletPool.get(this.x + (Math.random()*(this.width - 1 + 1) + 1),  this.y+this.height/2, -rainSpeed);
+		game.rainPool.get(this.x + (Math.random()*(this.width - 1 + 1) + 1),  this.y+this.height/2, -rainSpeed);
 	};
 
 	/*
-	 * Resets the enemy values
+	 * Resets the cloud values
 	 */
 	this.clear = function() {
 		this.x = 0;
@@ -798,7 +798,7 @@ function Enemy() {
 		this.isColliding = false;
 	};
 }
-Enemy.prototype = new Drawable();
+Cloud.prototype = new Drawable();
 
 
  /**
@@ -841,9 +841,9 @@ function Game() {
 			Bullet.prototype.canvasWidth = this.mainCanvas.width;
 			Bullet.prototype.canvasHeight = this.mainCanvas.height;
 
-			Enemy.prototype.context = this.mainContext;
-			Enemy.prototype.canvasWidth = this.mainCanvas.width;
-			Enemy.prototype.canvasHeight = this.mainCanvas.height;
+			Cloud.prototype.context = this.mainContext;
+			Cloud.prototype.canvasWidth = this.mainCanvas.width;
+			Cloud.prototype.canvasHeight = this.mainCanvas.height;
 
 			// Initialize the background object
 			this.background = new Background();
@@ -897,14 +897,14 @@ function Game() {
 
 			}
 
-			// Initialize the enemy pool object
-			//this.enemyPool = new Pool(9);
-			this.enemyPool = new Pool(enemyAmount);
-			this.enemyPool.init("enemy");
+			// Initialize the cloud pool object
+			//this.cloudPool = new Pool(9);
+			this.cloudPool = new Pool(cloudAmount);
+			this.cloudPool.init("cloud");
 			this.spawnWave();
 
-			this.enemyBulletPool = new Pool(50);
-			this.enemyBulletPool.init("enemyBullet");
+			this.rainPool = new Pool(50);
+			this.rainPool.init("rain");
 
 			// Start QuadTree
 			this.quadTree = new QuadTree({x:0,y:0,width:this.mainCanvas.width,height:this.mainCanvas.height});
@@ -938,15 +938,15 @@ function Game() {
 
 	// Spawn a new wave of enemies
 	this.spawnWave = function() {
-		var height = imageRepository.enemy.height;
+		var height = imageRepository.cloud.height;
 		var width = 40;
 		var x = 1200;
 		var y = -height;
 		var spacer = y * 1.5;
-		for (var i = 1; i <= enemyAmount; i++) {
-			this.enemyPool.get(x,y,2);
+		for (var i = 1; i <= cloudAmount; i++) {
+			this.cloudPool.get(x,y,2);
 			// x += width + 80;
-			x += width + enemySpacing;
+			x += width + cloudSpacing;
 			if (i % 3 == 0) {
 				x = -1000;
 				y += spacer;
@@ -954,7 +954,7 @@ function Game() {
 		}
 	}
 
-	// if(enemy.y < -57 && enemy.y >= -142.5) {
+	// if(cloud.y < -57 && cloud.y >= -142.5) {
 	// 	this.speedX = this.speedX * -1;
 	// }
 
@@ -985,9 +985,9 @@ function Game() {
 		this.character.init(this.characterStartX, this.characterStartY,
 		               imageRepository.character.width, imageRepository.character.height);
 
-		this.enemyPool.init("enemy");
+		this.cloudPool.init("cloud");
 		this.spawnWave();
-		this.enemyBulletPool.init("enemyBullet");
+		this.rainPool.init("rain");
 
 		this.backgroundAudio.currentTime = 0;
 		this.backgroundAudio.play();
@@ -1103,13 +1103,13 @@ function animate() {
 	// Insert objects into quadtree
 	game.quadTree.clear();
 	game.quadTree.insert(game.character);
-	game.quadTree.insert(game.enemyPool.getPool());
-	game.quadTree.insert(game.enemyBulletPool.getPool());
+	game.quadTree.insert(game.cloudPool.getPool());
+	game.quadTree.insert(game.rainPool.getPool());
 
 	detectCollision();
 
 	// No more enemies
-	if (game.enemyPool.getPool().length === 0) {
+	if (game.cloudPool.getPool().length === 0) {
 		game.spawnWave();
 	}
 
@@ -1120,8 +1120,8 @@ function animate() {
 		game.background.draw();
 		game.character.move();
 		
-		game.enemyBulletPool.animate();
-		game.enemyPool.animate();
+		game.rainPool.animate();
+		game.cloudPool.animate();
 	}
 }
 
