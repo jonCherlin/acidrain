@@ -21,7 +21,7 @@
  /*ADJUSTABLE VARIABLES*/
  var timeLimitSecsTenths = 0;
  var timeLimitSecsHundredths = 0;
- var timeLimitMins = 2;
+ var timeLimitMins = 1;
  var timerExecute;
 
  var secsTenthsZero = false;
@@ -37,6 +37,8 @@
  var cloudScreenEdge = 480;
 
  var hit_counter = 0;
+
+ var mute = false;
 
 /**
  * Initialize the Game and start it.
@@ -961,8 +963,10 @@ function Game() {
 	// Start the animation loop
 	this.start = function() {
 		this.character.draw();
-		this.backgroundAudio.play();
-		this.backgroundMusic.play();
+		if(!mute) {
+			this.backgroundAudio.play();
+			this.backgroundMusic.play();
+		}
 		animate();
 		timerExecute = setInterval(function(){myTimer()}, 1000);
 	};
@@ -989,22 +993,24 @@ function Game() {
 		this.spawnWave();
 		this.rainPool.init("rain");
 
-		this.backgroundAudio.currentTime = 0;
-		this.backgroundAudio.play();
+		if(!mute) {
+			this.backgroundAudio.currentTime = 0;
+			this.backgroundAudio.play();
 
-		this.backgroundMusic.currentTime = 0;
-		this.backgroundMusic.play();
+			this.backgroundMusic.currentTime = 0;
+			this.backgroundMusic.play();
+		}
 		
 		mins = false;
  		secsHundredthsZero = false;
  		secsTenthsZero = false;
 
-		document.getElementById("mins").innerHTML = '2' + ':';
+		document.getElementById("mins").innerHTML = '1' + ':';
     	document.getElementById("secsHundredths").innerHTML = '0';
     	document.getElementById("secsTenths").innerHTML = '0';
 		timeLimitSecsTenths = 0;
 		timeLimitSecsHundredths = 0;
-		timeLimitMins = 2;
+		timeLimitMins = 1;
 		//timerExecute = setInterval(function(){myTimer()}, 1000);
 
 		rainSpeed = Math.floor(Math.random()*(10 - 7 + 1) + 7);
@@ -1214,3 +1220,23 @@ window.requestAnimFrame = (function(){
 				window.setTimeout(callback, 1000 / 60);
 			};
 })();
+
+$(document).ready(function() {
+
+	$('#sound_on').click(function() {
+		$(this).hide();
+		$('#sound_off').show();
+		game.backgroundAudio.pause();
+		game.backgroundMusic.pause();
+		mute = true;
+	});
+
+	$('#sound_off').click(function() {
+		$(this).hide();
+		$('#sound_on').show();
+		game.backgroundAudio.play();
+		game.backgroundMusic.play();
+		mute = false;
+	});
+
+});
