@@ -19,26 +19,50 @@
  */
 
  /*ADJUSTABLE VARIABLES*/
- var timeLimitSecsTenths = 0;
- var timeLimitSecsHundredths = 0;
- var timeLimitMins = 1;
+var level = 2;
+
+ var timeLimitSecsTenths;
+ var timeLimitSecsHundredths;
+ var timeLimitMins;
  var timerExecute;
 
  var secsTenthsZero = false;
  var secsHundredthsZero = false;
  var mins = false;
 
- var percentFire = 0;
+ var rainDensity = 0;
  var rainSpeed = 0;
 
- var cloudAmount = 6;
- var cloudSpeed = 2;
- var cloudSpacing = 300;
- var cloudScreenEdge = 480;
+ var cloudAmount;
+ var cloudSpeed;
+ var cloudSpacing;
+ var cloudScreenEdge;
 
  var hit_counter = 0;
 
  var mute = false;
+
+ if(level == 1) {
+ 	timeLimitSecsTenths = 0;
+	timeLimitSecsHundredths = 0;
+	timeLimitMins = 1;
+
+	cloudAmount = 6;
+	cloudSpeed = 2;
+	cloudSpacing = 300;
+	cloudScreenEdge = 480;
+ }
+
+ if(level == 2) {
+ 	timeLimitSecsTenths = 0;
+	timeLimitSecsHundredths = 3;
+	timeLimitMins = 1;
+
+	cloudAmount = 6;
+	cloudSpeed = 3;
+	cloudSpacing = 300;
+	cloudScreenEdge = 480;
+ }
 
 /**
  * Initialize the Game and start it.
@@ -47,7 +71,12 @@ var gameover = false;
 var game = new Game();
 
 function init() {
+
 	game.init();
+
+	document.getElementById("mins").innerHTML = timeLimitMins + ':';
+	document.getElementById("secsHundredths").innerHTML = timeLimitSecsHundredths;
+	document.getElementById("secsTenths").innerHTML = timeLimitSecsTenths;
 }
 
 /*GAME TIMER*/
@@ -690,7 +719,7 @@ Character.prototype = new Drawable();
  * Create the cloud character object.
  */
 function Cloud() {
-	//var percentFire = .02;
+	//var rainDensity = .02;
 	var chance = 0;
 	this.alive = false;
 	//this.collidableWith = "bullet";
@@ -729,7 +758,7 @@ function Cloud() {
 			//this.x = this.rightEdge + (this.width * cloudAmount) + this.width;
 			this.x = this.rightEdge;
 			this.speedX = -this.speed;
-			//percentFire += .1;
+			//rainDensity += .1;
 		}
 		else if ( (this.x - (this.width * cloudAmount) >= this.rightEdge + 1000) && (this.y <= -7.5) ) {
 			//console.log(this.y);
@@ -755,7 +784,14 @@ function Cloud() {
 				//console.log(this.speedX);
 			}
 			//console.log(this.y);
-			percentFire = .03;
+			if(level == 1) {
+				rainDensity = .03;
+			}
+
+			if(level == 2) {
+				rainDensity = .04;
+			}
+			
 		}
 
 		if (!this.isColliding) {
@@ -763,7 +799,7 @@ function Cloud() {
 
 			// cloud has a chance to shoot every movement
 			chance = Math.floor(Math.random()*101);
-			if (chance/100 < percentFire) {
+			if (chance/100 < rainDensity) {
 				this.fire();
 			}
 
@@ -783,7 +819,16 @@ function Cloud() {
 		//game.rainPool.get(this.x+this.width/2,  this.y+this.height, -rainSpeed);
 
 		/*RANDOM RAIN SPEED Math.floor(Math.random()*(max-min+1)+min);*/
-		rainSpeed = Math.floor(Math.random()*(10 - 7 + 1) + 7);
+		if(level == 1) {
+			rainSpeed = Math.floor(Math.random()*(10 - 7 + 1) + 7);
+		}
+
+		if(level == 2) {
+			rainSpeed = Math.floor(Math.random()*(11 - 8 + 1) + 8);
+		}
+
+		//console.log(rainSpeed);
+		
 		game.rainPool.get(this.x + (Math.random()*(this.width - 1 + 1) + 1),  this.y+this.height/2, -rainSpeed);
 	};
 
@@ -973,7 +1018,7 @@ function Game() {
 
 	// Restart the game
 	this.restart = function() {
-		percentFire = 0;
+		rainDensity = 0;
 		gameover = false;
 		// this.gameOverAudio.pause();
 
@@ -1005,15 +1050,29 @@ function Game() {
  		secsHundredthsZero = false;
  		secsTenthsZero = false;
 
-		document.getElementById("mins").innerHTML = '1' + ':';
-    	document.getElementById("secsHundredths").innerHTML = '0';
-    	document.getElementById("secsTenths").innerHTML = '0';
-		timeLimitSecsTenths = 0;
-		timeLimitSecsHundredths = 0;
-		timeLimitMins = 1;
-		//timerExecute = setInterval(function(){myTimer()}, 1000);
+ 		if(level == 1) {
+		 	timeLimitSecsTenths = 0;
+			timeLimitSecsHundredths = 0;
+			timeLimitMins = 1;
+		 }
 
-		rainSpeed = Math.floor(Math.random()*(10 - 7 + 1) + 7);
+		 if(level == 2) {
+		 	timeLimitSecsTenths = 0;
+			timeLimitSecsHundredths = 3;
+			timeLimitMins = 1;
+		 }
+
+		document.getElementById("mins").innerHTML = timeLimitMins + ':';
+		document.getElementById("secsHundredths").innerHTML = timeLimitSecsHundredths;
+		document.getElementById("secsTenths").innerHTML = timeLimitSecsTenths;
+		//timerExecute = setInterval(function(){myTimer()}, 1000);
+		if(level == 1) {
+			rainSpeed = Math.floor(Math.random()*(10 - 7 + 1) + 7);	
+		}
+		
+		if(level == 2) {
+			rainSpeed = Math.floor(Math.random()*(11 - 8 + 1) + 8);	
+		}
 
 		this.start();
 	};
@@ -1222,6 +1281,14 @@ window.requestAnimFrame = (function(){
 })();
 
 $(document).ready(function() {
+
+	if(level == 1) {
+		$('#background').css('background-image', 'url("images/city_bg.png")');
+	}
+
+	if(level == 2) {
+		$('#background').css('background-image', 'url("images/city_bg_2.png")');
+	}
 
 	$('#sound_on').click(function() {
 		$(this).hide();
