@@ -33,6 +33,9 @@ var level = 2;
  var rainDensity = 0;
  var rainSpeed = 0;
 
+ var umbrellaDensity = 0;
+ var umbrellaSpeed = 0;
+
  var cloudAmount;
  var cloudSpeed;
  var cloudSpacing;
@@ -160,9 +163,10 @@ var imageRepository = new function() {
 	this.character = new Image();
 	this.cloud = new Image();
 	this.rain = new Image();
+	this.umbrella = new Image();
 
 	// Ensure all images have loaded before starting the game
-	var numImages = 3;
+	var numImages = 4;
 	var numLoaded = 0;
 	function imageLoaded() {
 		numLoaded++;
@@ -179,11 +183,15 @@ var imageRepository = new function() {
 	this.rain.onload = function() {
 		imageLoaded();
 	}
+	this.umbrella.onload = function() {
+		imageLoaded();
+	}
 
 	// Set images src
 	this.character.src = "images/character_umbrella.png";
 	this.cloud.src = "images/cloud.png";
 	this.rain.src = "images/rain.png";
+	this.umbrella.src = "images/umbrella.png";
 }
 
 
@@ -280,9 +288,15 @@ function Bullet(object) {
 		else if (self === "rain" && this.y >= (this.canvasHeight - 100)) {
 			return true;
 		}
+		else if (self === "umbrella" && this.y >= (this.canvasHeight - 100)) {
+			return true;
+		}
 		else {
 			if (self === "rain") {
 				this.context.drawImage(imageRepository.rain, this.x, this.y);
+			}
+			if (self === "umbrella") {
+				this.context.drawImage(imageRepository.umbrella, this.x, this.y);
 			}
 
 			return false;
@@ -301,6 +315,60 @@ function Bullet(object) {
 	};
 }
 Bullet.prototype = new Drawable();
+
+function Umbrella_bullet(object) {
+	this.alive = false; // Is true if the bullet is currently in use
+	var self = object;
+	/*
+	 * Sets the bullet values
+	 */
+	this.spawn = function(x, y, speed) {
+		this.x = x;
+		this.y = y;
+		this.speed = speed;
+		this.alive = true;
+	};
+
+	/*
+	 * Uses a "dirty rectangle" to erase the bullet and moves it.
+	 * Returns true if the bullet moved of the screen, indicating that
+	 * the bullet is ready to be cleared by the pool, otherwise draws
+	 * the bullet.
+	 */
+	this.draw = function() {
+		this.context.clearRect(this.x-1, this.y-1, this.width+2, this.height+2);
+		this.y -= this.speed;
+
+		// if (this.isColliding) {
+		// 	return true;
+		// }
+		// else if (self === "umbrella" && this.y >= (this.canvasHeight - 100)) {
+		// 	return true;
+		// }
+		if (self === "umbrella" && this.y >= (this.canvasHeight - 150)) {
+			this.speed = 0;
+		}
+		// else {
+		// 	if (self === "umbrella") {
+				this.context.drawImage(imageRepository.umbrella, this.x, this.y);
+		// 	}
+
+		// 	return false;
+		// }
+	};
+
+	/*
+	 * Resets the bullet values
+	 */
+	this.clear = function() {
+		this.x = 0;
+		this.y = 0;
+		this.speed = 0;
+		this.alive = false;
+		this.isColliding = false;
+	};
+}
+Umbrella_bullet.prototype = new Drawable();
 
 
 /**
@@ -559,6 +627,16 @@ function Pool(maxSize) {
 				pool[i] = bullet;
 			}
 		}
+		else if (object == "umbrella") {
+			for (var i = 0; i < size; i++) {
+				var umbrella_bullet = new Umbrella_bullet("umbrella");
+				umbrella_bullet.init(0,0, imageRepository.umbrella.width,
+										imageRepository.umbrella.height);
+				umbrella_bullet.collidableWith = "character";
+				umbrella_bullet.type = "umbrella";
+				pool[i] = umbrella_bullet;
+			}
+		}
 	};
 
 	/*
@@ -614,6 +692,7 @@ function Character() {
 	var fireRate = 15;
 	var counter = 0;
 	this.collidableWith = "rain";
+	this.collidableWith = "umbrella";
 	this.type = "character";
 
 	this.init = function(x, y, width, height) {
@@ -790,6 +869,7 @@ function Cloud() {
 
 			if(level == 2) {
 				rainDensity = .04;
+				umbrellaDensity = .04;
 			}
 			
 		}
@@ -825,11 +905,13 @@ function Cloud() {
 
 		if(level == 2) {
 			rainSpeed = Math.floor(Math.random()*(11 - 8 + 1) + 8);
+			umbrellaSpeed = Math.floor(Math.random()*(11 - 8 + 1) + 8);
 		}
 
 		//console.log(rainSpeed);
 		
 		game.rainPool.get(this.x + (Math.random()*(this.width - 1 + 1) + 1),  this.y+this.height/2, -rainSpeed);
+		game.umbrellaPool.get(this.x + (Math.random()*(this.width - 1 + 1) + 1),  this.y+this.height/2, -umbrellaSpeed);
 	};
 
 	/*
@@ -887,6 +969,10 @@ function Game() {
 			Bullet.prototype.context = this.mainContext;
 			Bullet.prototype.canvasWidth = this.mainCanvas.width;
 			Bullet.prototype.canvasHeight = this.mainCanvas.height;
+
+			Umbrella_bullet.prototype.context = this.mainContext;
+			Umbrella_bullet.prototype.canvasWidth = this.mainCanvas.width;
+			Umbrella_bullet.prototype.canvasHeight = this.mainCanvas.height;
 
 			Cloud.prototype.context = this.mainContext;
 			Cloud.prototype.canvasWidth = this.mainCanvas.width;
@@ -952,6 +1038,9 @@ function Game() {
 
 			this.rainPool = new Pool(50);
 			this.rainPool.init("rain");
+
+			this.umbrellaPool = new Pool(50);
+			this.umbrellaPool.init("umbrella");
 
 			// Start QuadTree
 			this.quadTree = new QuadTree({x:0,y:0,width:this.mainCanvas.width,height:this.mainCanvas.height});
@@ -1019,6 +1108,7 @@ function Game() {
 	// Restart the game
 	this.restart = function() {
 		rainDensity = 0;
+		umbrellaDensity = 0;
 		gameover = false;
 		// this.gameOverAudio.pause();
 
@@ -1037,6 +1127,7 @@ function Game() {
 		this.cloudPool.init("cloud");
 		this.spawnWave();
 		this.rainPool.init("rain");
+		this.umbrellaPool.init("umbrella");
 
 		if(!mute) {
 			this.backgroundAudio.currentTime = 0;
@@ -1072,6 +1163,7 @@ function Game() {
 		
 		if(level == 2) {
 			rainSpeed = Math.floor(Math.random()*(11 - 8 + 1) + 8);	
+			umbrellaSpeed = Math.floor(Math.random()*(11 - 8 + 1) + 8);
 		}
 
 		this.start();
@@ -1170,6 +1262,7 @@ function animate() {
 	game.quadTree.insert(game.character);
 	game.quadTree.insert(game.cloudPool.getPool());
 	game.quadTree.insert(game.rainPool.getPool());
+	game.quadTree.insert(game.umbrellaPool.getPool());
 
 	detectCollision();
 
@@ -1186,6 +1279,7 @@ function animate() {
 		game.character.move();
 		
 		game.rainPool.animate();
+		game.umbrellaPool.animate();
 		game.cloudPool.animate();
 	}
 }
