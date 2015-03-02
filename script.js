@@ -35,6 +35,7 @@ var level = 2;
 
  var umbrellaDensity = 0;
  var umbrellaSpeed = 0;
+ var hit_umbrella;
 
  var cloudAmount;
  var cloudSpeed;
@@ -288,15 +289,9 @@ function Bullet(object) {
 		else if (self === "rain" && this.y >= (this.canvasHeight - 100)) {
 			return true;
 		}
-		else if (self === "umbrella" && this.y >= (this.canvasHeight - 100)) {
-			return true;
-		}
 		else {
 			if (self === "rain") {
 				this.context.drawImage(imageRepository.rain, this.x, this.y);
-			}
-			if (self === "umbrella") {
-				this.context.drawImage(imageRepository.umbrella, this.x, this.y);
 			}
 
 			return false;
@@ -339,9 +334,15 @@ function Umbrella_bullet(object) {
 		this.context.clearRect(this.x-1, this.y-1, this.width+2, this.height+2);
 		this.y -= this.speed;
 
-		// if (this.isColliding) {
-		// 	return true;
-		// }
+		this.context.drawImage(imageRepository.umbrella, this.x, this.y);
+
+		if (this.isColliding) {
+			console.log('umbrella collide');
+			hit_umbrella = true;
+
+			this.context.clearRect(this.x-1, this.y-1, this.width+2, this.height+2);
+			this.alive = false;
+		}
 		// else if (self === "umbrella" && this.y >= (this.canvasHeight - 100)) {
 		// 	return true;
 		// }
@@ -350,7 +351,7 @@ function Umbrella_bullet(object) {
 		}
 		// else {
 		// 	if (self === "umbrella") {
-				this.context.drawImage(imageRepository.umbrella, this.x, this.y);
+				
 		// 	}
 
 		// 	return false;
@@ -637,6 +638,7 @@ function Pool(maxSize) {
 				pool[i] = umbrella_bullet;
 			}
 		}
+		//console.log(size);
 	};
 
 	/*
@@ -692,7 +694,7 @@ function Character() {
 	var fireRate = 15;
 	var counter = 0;
 	this.collidableWith = "rain";
-	this.collidableWith = "umbrella";
+	//console.log(this.collidableWith);
 	this.type = "character";
 
 	this.init = function(x, y, width, height) {
@@ -707,6 +709,19 @@ function Character() {
 	}
 
 	this.draw = function() {
+
+		if(hit_umbrella) {
+			imageRepository.character.src = "images/character_umbrella.png";
+			this.context.clearRect(this.x, this.y, this.width, this.height);
+			imageRepository.character.height = 96;
+			game.characterStartY = game.characterCanvas.height - imageRepository.character.height - 100;
+			game.character.init(this.x, game.characterStartY,
+		               imageRepository.character.width, imageRepository.character.height);
+			hit_counter = 0;
+			//hit_umbrella = false;
+
+		}
+
 		this.context.clearRect(this.x, this.y, this.width, this.height);
 		this.context.drawImage(imageRepository.character, this.x, this.y);
 	};
@@ -743,15 +758,18 @@ function Character() {
 		}
 
 		// Redraw the character
+
 		if (!this.isColliding) {
 			this.draw();
 		}
 		else {
 
 			hit_counter += 1;
-			//console.log(hit_counter);
+			
+			console.log(hit_counter);
 
 			if(hit_counter == 1) {
+
 				imageRepository.character.src = "images/character_rain_coat.png";
 				this.context.clearRect(this.x, this.y, this.width, this.height);
 				imageRepository.character.height = 48;
@@ -760,9 +778,13 @@ function Character() {
 
 				game.character.init(this.x, game.characterStartY,
 			               imageRepository.character.width, imageRepository.character.height);
+
 				this.isColliding = false;
 
-
+				if(hit_umbrella) {
+					hit_umbrella = false;
+				}
+				
 			}
 
 			if(hit_counter == 2) {
@@ -779,11 +801,26 @@ function Character() {
 				game.characterStartY = game.characterCanvas.height - imageRepository.character.height - 100;
 
 				hit_counter = 0;
+
 				this.alive = false;
 				game.gameOver();
 				clearInterval(timerExecute);
 
 			}
+
+			// if(hit_counter == 3) {
+
+			// 	imageRepository.character.src = "images/character_umbrella.png";
+			// 	this.context.clearRect(this.x, this.y, this.width, this.height);
+			// 	imageRepository.character.height = 96;
+			// 	game.characterStartY = game.characterCanvas.height - imageRepository.character.height - 100;
+			// 	game.character.init(this.x, game.characterStartY,
+			//                imageRepository.character.width, imageRepository.character.height);
+
+			// 	this.isColliding = false;
+			// 	hit_counter = 0;
+
+			// }
 
 
 			// document.getElementById("mins").innerHTML = '2' + ':';
@@ -905,13 +942,13 @@ function Cloud() {
 
 		if(level == 2) {
 			rainSpeed = Math.floor(Math.random()*(11 - 8 + 1) + 8);
-			umbrellaSpeed = Math.floor(Math.random()*(11 - 8 + 1) + 8);
+			//umbrellaSpeed = Math.floor(Math.random()*(11 - 8 + 1) + 8);
 		}
 
 		//console.log(rainSpeed);
 		
 		game.rainPool.get(this.x + (Math.random()*(this.width - 1 + 1) + 1),  this.y+this.height/2, -rainSpeed);
-		game.umbrellaPool.get(this.x + (Math.random()*(this.width - 1 + 1) + 1),  this.y+this.height/2, -umbrellaSpeed);
+		//game.umbrellaPool.get(this.x + (Math.random()*(this.width - 1 + 1) + 1),  this.y+this.height/2, -umbrellaSpeed);
 	};
 
 	/*
@@ -1039,7 +1076,7 @@ function Game() {
 			this.rainPool = new Pool(50);
 			this.rainPool.init("rain");
 
-			this.umbrellaPool = new Pool(50);
+			this.umbrellaPool = new Pool(1);
 			this.umbrellaPool.init("umbrella");
 
 			// Start QuadTree
@@ -1069,6 +1106,14 @@ function Game() {
 
 			// this.checkAudio = window.setInterval(function(){checkReadyState()},1000);
 			checkReadyState();
+
+			if(level == 2) {
+				umbrellaSpeed = Math.floor(Math.random()*(11 - 8 + 1) + 8);
+			}
+
+		//console.log(rainSpeed);
+		
+		game.umbrellaPool.get(600,  575, 0);
 		}
 	};
 
